@@ -1,0 +1,70 @@
+import type { ImagingAnalysis } from '@/types/imaging';
+
+export const mockImagingAnalysis: ImagingAnalysis = {
+  claimId: 'CLM-2024-002',
+  patient: 'Priya Venkataraman, F/34',
+  modality: 'X-Ray · CT · MRI',
+  bodyPart: 'Lower Leg (Tibia)',
+  studyDate: '15 Oct 2024',
+  reviewer: 'Dr. A. Menon (AI-Assisted)',
+  status: 'CONDITIONAL',
+  confidence: 89,
+  clinicalRisk: 'Medium',
+  keyFindings: [
+    { text: 'AI detected mid-shaft tibia fracture with 94% confidence', consistent: true },
+    { text: 'Hospital report confirms minor fracture — findings align', consistent: true },
+    { text: 'No imaging evidence of ligament tear (reported in documents)', consistent: false },
+    { text: 'AI severity assessment (Moderate) conflicts with report (Minor)', consistent: false },
+  ],
+  aiFindings: [
+    { name: 'Tibia Fracture', detected: true, confidence: 94, severity: 'Moderate' },
+    { name: 'Soft Tissue Swelling', detected: true, confidence: 88, severity: 'Mild' },
+    { name: 'Infiltration', detected: true, confidence: 67, severity: 'Mild' },
+    { name: 'Fluid Accumulation', detected: false, confidence: 12 },
+    { name: 'Ligament Tear', detected: false, confidence: 8 },
+    { name: 'Tumour / Mass', detected: false, confidence: 3 },
+  ],
+  imageQuality: 'Moderate',
+  images: [
+    { id: 'img-1', modality: 'X-Ray', day: 1, date: '15 Oct 2024', finding: 'Fracture Line Visible', consistent: true },
+    { id: 'img-2', modality: 'CT Scan', day: 2, date: '16 Oct 2024', finding: 'Fracture Confirmed, No Displacement', consistent: true },
+    { id: 'img-3', modality: 'MRI', day: 4, date: '18 Oct 2024', finding: 'Early Healing Stage, Oedema Present', consistent: true },
+  ],
+  consistencyScore: 91,
+  nlpExtraction: {
+    diagnosis: 'Tibial Shaft Fracture',
+    severity: 'Minor',
+    findings: ['Ligament tear', 'Soft tissue swelling', 'Periosteal reaction'],
+    extractionConfidence: 'High',
+  },
+  correlationRows: [
+    { finding: 'Tibia Fracture', imageAI: true, report: true, match: 'match' },
+    { finding: 'Ligament Tear', imageAI: false, report: true, match: 'mismatch' },
+    { finding: 'Fluid Collection', imageAI: false, report: false, match: 'match' },
+    { finding: 'Severity Level', imageAI: null, report: null, match: 'partial', aiValue: 'Moderate', reportValue: 'Minor' },
+    { finding: 'Soft Tissue Swelling', imageAI: true, report: true, match: 'match' },
+    { finding: 'Infiltration', imageAI: true, report: false, match: 'mismatch' },
+  ],
+  inconsistencies: [
+    { type: 'warning', description: 'Possible exaggeration: Ligament tear reported but not detected in any imaging study' },
+    { type: 'warning', description: 'Severity underreported: AI assessment is Moderate; hospital report states Minor' },
+    { type: 'pass', description: 'No hidden or additional findings detected beyond submitted report' },
+  ],
+  stgAlignment: {
+    claimedPackage: 'Major Fracture Surgery',
+    items: [
+      { evidence: 'Confirmed fracture on imaging', present: true, status: 'pass' },
+      { evidence: 'Surgical planning imaging available', present: true, status: 'pass' },
+      { evidence: 'Severity justification for Major package', present: false, status: 'warn' },
+      { evidence: 'Neurovascular assessment documented', present: true, status: 'pass' },
+    ],
+    complianceScore: 83,
+  },
+  radiologyTimeline: [
+    { day: 1, modality: 'X-Ray', purpose: 'Initial Diagnosis' },
+    { day: 2, modality: 'CT Scan', purpose: 'Fracture Confirmation' },
+    { day: 4, modality: 'MRI', purpose: 'Soft Tissue & Healing Assessment' },
+    { day: 5, modality: 'Surgery', purpose: 'Surgical Intervention' },
+  ],
+  timelineLogical: true,
+};
