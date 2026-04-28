@@ -2,109 +2,165 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --surface-1: rgba(255, 255, 255, 0.03);
-    --surface-2: rgba(255, 255, 255, 0.055);
-    --surface-3: rgba(255, 255, 255, 0.08);
-    --border-subtle: rgba(255, 255, 255, 0.07);
-    --border-default: rgba(255, 255, 255, 0.1);
-    --border-emphasis: rgba(255, 255, 255, 0.15);
-  }
+/* ─── Per-theme design tokens ─────────────────────────────────────────────── */
 
+[data-theme="claimlens"] {
+  /* Glass surfaces */
+  --glass-bg:          rgba(255, 255, 255, 0.030);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.055);
+  --glass-bg-sm:       rgba(255, 255, 255, 0.050);
+  --glass-border:      rgba(255, 255, 255, 0.070);
+  --glass-border-md:   rgba(255, 255, 255, 0.100);
+  --glass-shadow:      0 4px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.06);
+  --glass-shadow-lg:   0 8px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
+
+  /* Layout */
+  --header-bg:         rgba(5, 13, 26, 0.84);
+  --header-border:     rgba(255, 255, 255, 0.065);
+  --body-bg:           #050d1a;
+  --body-glow-1:       rgba(59, 130, 246, 0.08);
+  --body-glow-2:       rgba(139, 92, 246, 0.05);
+
+  /* Scrollbar */
+  --sb-thumb:          rgba(255, 255, 255, 0.10);
+  --sb-thumb-hover:    rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="light"] {
+  /* Glass surfaces */
+  --glass-bg:          rgba(255, 255, 255, 0.82);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.95);
+  --glass-bg-sm:       rgba(255, 255, 255, 0.90);
+  --glass-border:      rgba(15, 23, 42, 0.090);
+  --glass-border-md:   rgba(15, 23, 42, 0.130);
+  --glass-shadow:      0 2px 16px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  --glass-shadow-lg:   0 6px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+
+  /* Layout */
+  --header-bg:         rgba(248, 250, 252, 0.92);
+  --header-border:     rgba(15, 23, 42, 0.08);
+  --body-bg:           #f1f5f9;
+  --body-glow-1:       rgba(59, 130, 246, 0.04);
+  --body-glow-2:       rgba(139, 92, 246, 0.02);
+
+  /* Scrollbar */
+  --sb-thumb:          rgba(15, 23, 42, 0.15);
+  --sb-thumb-hover:    rgba(15, 23, 42, 0.25);
+}
+
+/* ─── Global base ──────────────────────────────────────────────────────────── */
+
+@layer base {
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    scrollbar-color: var(--sb-thumb) transparent;
   }
-
-  *::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-
-  *::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-  }
-
-  *::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.18);
-  }
+  *::-webkit-scrollbar          { width: 5px; height: 5px; }
+  *::-webkit-scrollbar-track    { background: transparent; }
+  *::-webkit-scrollbar-thumb    { background-color: var(--sb-thumb);       border-radius: 3px; }
+  *::-webkit-scrollbar-thumb:hover { background-color: var(--sb-thumb-hover); }
 
   body {
-    background-color: #050d1a;
+    background-color: var(--body-bg);
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+      radial-gradient(ellipse 80% 50% at 50% -20%, var(--body-glow-1) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%,  var(--body-glow-2) 0%, transparent 50%);
     min-height: 100vh;
+    transition: background-color 0.25s ease;
   }
 }
 
+/* ─── Component utilities ───────────────────────────────────────────────────── */
+
 @layer components {
-  /* Glassmorphic cards */
+
+  /* Glassmorphic cards — all colours driven by CSS vars */
   .glass {
-    background: var(--surface-1);
-    backdrop-filter: blur(16px) saturate(180%);
+    background:           var(--glass-bg);
+    backdrop-filter:      blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    border:               1px solid var(--glass-border);
+    box-shadow:           var(--glass-shadow);
   }
 
   .glass-elevated {
-    background: var(--surface-2);
-    backdrop-filter: blur(20px) saturate(200%);
+    background:           var(--glass-bg-elevated);
+    backdrop-filter:      blur(20px) saturate(200%);
     -webkit-backdrop-filter: blur(20px) saturate(200%);
-    border: 1px solid var(--border-default);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border:               1px solid var(--glass-border-md);
+    box-shadow:           var(--glass-shadow-lg);
   }
 
   .glass-sm {
-    background: var(--surface-2);
-    backdrop-filter: blur(8px);
+    background:           var(--glass-bg-sm);
+    backdrop-filter:      blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid var(--border-subtle);
+    border:               1px solid var(--glass-border);
   }
 
-  /* Status styles */
-  .status-pass {
-    @apply bg-emerald-500/10 border border-emerald-500/30 text-emerald-400;
-  }
-  .status-fail {
-    @apply bg-red-500/10 border border-red-500/30 text-red-400;
-  }
-  .status-conditional {
-    @apply bg-amber-500/10 border border-amber-500/30 text-amber-400;
-  }
-  .status-warn {
-    @apply bg-amber-500/10 border border-amber-500/25 text-amber-400;
-  }
+  /* Status badges */
+  .status-pass        { @apply bg-emerald-500/10 border border-emerald-500/30 text-emerald-600; }
+  .status-fail        { @apply bg-red-500/10     border border-red-500/30     text-red-600;     }
+  .status-conditional { @apply bg-amber-500/10  border border-amber-500/30  text-amber-600;  }
+  .status-warn        { @apply bg-amber-500/10  border border-amber-500/25  text-amber-600;  }
 
-  /* Text gradient */
+  /* Maintain bright badge colours on dark theme */
+  [data-theme="claimlens"] .status-pass        { color: #34d399; }
+  [data-theme="claimlens"] .status-fail        { color: #f87171; }
+  [data-theme="claimlens"] .status-conditional { color: #fbbf24; }
+  [data-theme="claimlens"] .status-warn        { color: #fbbf24; }
+
+  /* Gradient text */
   .text-gradient-blue {
-    @apply bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent;
   }
 
   /* Section label */
-  .section-label {
-    @apply text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500;
-  }
+  .section-label { @apply text-[10px] font-semibold uppercase tracking-[0.12em]; }
 
-  /* Hover row */
-  .hover-row {
-    @apply hover:bg-white/[0.025] transition-colors duration-150;
-  }
+  /* Hover rows */
+  .hover-row { @apply hover:bg-black/[0.025] transition-colors duration-150; }
 
   /* Mismatch highlight */
-  .mismatch-cell {
-    @apply bg-red-500/10 text-red-400 rounded px-1.5 py-0.5;
-  }
+  .mismatch-cell { @apply bg-red-500/10 text-red-500 rounded px-1.5 py-0.5; }
 
   /* Scan viewer */
   .scan-bg {
     background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0d14 50%, #050709 100%);
   }
 }
+
+/* ─── Light-theme text overrides ────────────────────────────────────────────
+   Tailwind compiles e.g. .text-slate-200 to a very light grey which is
+   invisible on a white background.  These scoped rules flip the palette.    */
+
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-200 { color: #0f172a; }
+
+[data-theme="light"] .text-slate-300  { color: #1e293b; }
+[data-theme="light"] .text-slate-400  { color: #334155; }
+[data-theme="light"] .text-slate-500  { color: #475569; }
+[data-theme="light"] .text-slate-600  { color: #64748b; }
+
+/* Borders */
+[data-theme="light"] .border-white\/\[0\.05\],
+[data-theme="light"] .border-white\/\[0\.06\],
+[data-theme="light"] .border-white\/\[0\.07\],
+[data-theme="light"] .border-white\/\[0\.08\],
+[data-theme="light"] .border-white\/10 { border-color: rgba(15,23,42,0.10); }
+
+/* Subtle bg surfaces used inside cards */
+[data-theme="light"] .bg-white\/\[0\.02\],
+[data-theme="light"] .bg-white\/\[0\.025\],
+[data-theme="light"] .bg-white\/\[0\.03\],
+[data-theme="light"] .bg-white\/\[0\.04\],
+[data-theme="light"] .bg-white\/\[0\.05\],
+[data-theme="light"] .bg-white\/\[0\.06\] { background-color: rgba(15,23,42,0.04); }
+
+/* Skeleton loader */
+[data-theme="light"] .bg-white\/\[0\.06\] { background-color: rgba(15,23,42,0.06); }
+
+/* Animations */
+@keyframes fadeIn  { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+@keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
