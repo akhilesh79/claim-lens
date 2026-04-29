@@ -71,7 +71,7 @@ export function Header() {
                }`
             }
           >
-            🔬 Image Review
+            🔬 Image Validations
           </NavLink>
         </nav>
 
