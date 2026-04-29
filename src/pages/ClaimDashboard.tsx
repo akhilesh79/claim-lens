@@ -53,6 +53,13 @@ export default function ClaimDashboard() {
         <DecisionSummaryPanel data={data} />
       </div>
 
+      {/* Recommended actions — directly after header */}
+      <RecommendedActions
+        actions={data.recommendedActions}
+        status={data.status}
+        claimId={data.summary.id}
+      />
+
       {/* Two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Left column (40%) */}
@@ -69,13 +76,6 @@ export default function ClaimDashboard() {
           <FinancialAnalysis items={data.financialItems} fraudSignals={data.fraudSignals} />
         </div>
       </div>
-
-      {/* Recommended actions */}
-      <RecommendedActions
-        actions={data.recommendedActions}
-        status={data.status}
-        claimId={data.summary.id}
-      />
 
       {/* Document preview modal (portal-style via Redux) */}
       <DocumentPreviewModal />

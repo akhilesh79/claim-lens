@@ -23,7 +23,10 @@ export function Header() {
             <FiCheckCircle size={14} color='white' strokeWidth={2.5} />
           </div>
           <div>
-            <span className='text-sm font-bold tracking-tight font-heading' style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
+            <span
+              className='text-sm font-bold tracking-tight font-heading'
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            >
               ClaimLens
             </span>
             <span className='hidden sm:inline text-xs ml-1.5' style={{ color: isDark ? '#64748b' : '#64748b' }}>
@@ -68,7 +71,7 @@ export function Header() {
                }`
             }
           >
-            🔬 Image Validation
+            🔬 Image Review
           </NavLink>
         </nav>
 
@@ -84,11 +87,7 @@ export function Header() {
               color: isDark ? '#94a3b8' : '#475569',
             }}
           >
-            {isDark ? (
-              <FiSun size={15} />
-            ) : (
-              <FiMoon size={14} />
-            )}
+            {isDark ? <FiSun size={15} /> : <FiMoon size={14} />}
           </button>
 
           {/* Divider + avatar */}
