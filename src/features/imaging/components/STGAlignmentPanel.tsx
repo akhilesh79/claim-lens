@@ -21,11 +21,7 @@ export function STGAlignmentPanel({ stgAlignment }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.33 }}
     >
-      <SectionContainer
-        title="STG Alignment"
-        icon={<FiCheckSquare size={14} />}
-        defaultOpen
-      >
+      <SectionContainer title="STG Alignment" icon={<FiCheckSquare size={14} />} defaultOpen>
         <div className="pt-3 space-y-3">
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-blue-500/[0.06] border border-blue-500/15">
             <span className="text-[10px] text-slate-500 uppercase tracking-wider flex-shrink-0">Claimed Package</span>
@@ -34,40 +30,48 @@ export function STGAlignmentPanel({ stgAlignment }: Props) {
 
           <div>
             <p className="section-label mb-2">Evidence Required by STG</p>
-            <div className="space-y-1.5">
-              {stgAlignment.items.map((item, i) => {
-                const cfg = STATUS_ICON[item.status];
-                return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.06 * i }}
-                    className={`flex items-center justify-between px-3 py-2 rounded-xl border transition-colors ${
-                      item.status === 'warn'
-                        ? 'border-amber-500/15 bg-amber-500/[0.04]'
-                        : 'border-white/[0.05] hover:bg-white/[0.02]'
-                    }`}
-                  >
-                    <span className={`text-xs font-medium ${item.present ? 'text-slate-200' : 'text-amber-300/80'}`}>
-                      {item.evidence}
-                    </span>
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${cfg.cls}`}>
-                      {cfg.icon}
-                    </span>
-                  </motion.div>
-                );
-              })}
-            </div>
+            {stgAlignment.items.length > 0 ? (
+              <div className="space-y-1.5">
+                {stgAlignment.items.map((item, i) => {
+                  const cfg = STATUS_ICON[item.status];
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -6 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.06 * i }}
+                      className={`flex items-center justify-between px-3 py-2 rounded-xl border transition-colors ${
+                        item.status === 'warn'
+                          ? 'border-amber-500/15 bg-amber-500/[0.04]'
+                          : 'border-white/[0.05] hover:bg-white/[0.02]'
+                      }`}
+                    >
+                      <span className={`text-xs font-medium ${item.present ? 'text-slate-200' : 'text-amber-300/80'}`}>
+                        {item.evidence}
+                      </span>
+                      <span
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${cfg.cls}`}
+                      >
+                        {cfg.icon}
+                      </span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-600 italic">No specific evidence requirements listed for this package</p>
+            )}
           </div>
 
-          <ProgressBar
-            value={stgAlignment.complianceScore}
-            label="STG Compliance Score"
-            size="sm"
-            color="auto"
-            delay={0.5}
-          />
+          {stgAlignment.complianceScore !== null && (
+            <ProgressBar
+              value={stgAlignment.complianceScore}
+              label="STG Compliance Score"
+              size="sm"
+              color="auto"
+              delay={0.5}
+            />
+          )}
         </div>
       </SectionContainer>
     </motion.div>

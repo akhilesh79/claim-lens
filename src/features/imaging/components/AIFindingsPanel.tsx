@@ -5,7 +5,7 @@ import type { AIFinding } from '@/types/imaging';
 
 interface Props {
   findings: AIFinding[];
-  imageQuality: string;
+  imageQuality: string | null;
 }
 
 export function AIFindingsPanel({ findings, imageQuality }: Props) {
@@ -15,11 +15,7 @@ export function AIFindingsPanel({ findings, imageQuality }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.18 }}
     >
-      <SectionContainer
-        title="AI Clinical Findings"
-        icon={<FiGrid size={14} />}
-        defaultOpen
-      >
+      <SectionContainer title="AI Clinical Findings" icon={<FiGrid size={14} />} defaultOpen>
         <div className="space-y-3 pt-3">
           {findings.map((finding, i) => (
             <motion.div
@@ -28,18 +24,14 @@ export function AIFindingsPanel({ findings, imageQuality }: Props) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.06 * i }}
               className={`p-3 rounded-xl transition-colors ${
-                finding.detected
-                  ? 'bg-white/[0.03] hover:bg-white/[0.05]'
-                  : 'bg-white/[0.015]'
+                finding.detected ? 'bg-white/[0.03] hover:bg-white/[0.05]' : 'bg-white/[0.015]'
               }`}
             >
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-2">
                   <span
                     className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
-                      finding.detected
-                        ? 'bg-red-500/20 text-red-400'
-                        : 'bg-white/[0.06] text-slate-600'
+                      finding.detected ? 'bg-red-500/20 text-red-400' : 'bg-white/[0.06] text-slate-600'
                     }`}
                   >
                     {finding.detected ? '!' : '–'}
@@ -57,7 +49,7 @@ export function AIFindingsPanel({ findings, imageQuality }: Props) {
                   {finding.detected ? 'Detected' : 'None'}
                 </span>
               </div>
-              {finding.detected && (
+              {finding.detected && finding.confidence !== null && (
                 <ProgressBar
                   value={finding.confidence}
                   size="xs"
@@ -69,15 +61,23 @@ export function AIFindingsPanel({ findings, imageQuality }: Props) {
             </motion.div>
           ))}
 
-          {/* Image quality */}
           <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
             <span className="text-slate-500">Overall Image Quality</span>
-            <span className={`font-semibold ${
-              imageQuality === 'High' ? 'text-emerald-400' :
-              imageQuality === 'Moderate' ? 'text-amber-400' : 'text-red-400'
-            }`}>
-              {imageQuality}
-            </span>
+            {imageQuality ? (
+              <span
+                className={`font-semibold ${
+                  imageQuality === 'High'
+                    ? 'text-emerald-400'
+                    : imageQuality === 'Moderate'
+                    ? 'text-amber-400'
+                    : 'text-red-400'
+                }`}
+              >
+                {imageQuality}
+              </span>
+            ) : (
+              <span className="text-slate-600">Not assessed</span>
+            )}
           </div>
         </div>
       </SectionContainer>

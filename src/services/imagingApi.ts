@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { mockBaseQuery } from './baseQuery';
-import type { ImagingAnalysis } from '@/types/imaging';
+import type { ImagingApiResponse, ImagingAnalysis } from '@/types/imaging';
+import { normalizeImagingResponse } from '@/utils/imagingNormalizer';
 
 export const imagingApi = createApi({
   reducerPath: 'imagingApi',
@@ -9,6 +10,7 @@ export const imagingApi = createApi({
   endpoints: (builder) => ({
     getImagingAnalysis: builder.query<ImagingAnalysis, string>({
       query: (studyId) => `imaging/${studyId}`,
+      transformResponse: (raw: ImagingApiResponse) => normalizeImagingResponse(raw),
       providesTags: (_result, _error, id) => [{ type: 'Imaging', id }],
     }),
   }),

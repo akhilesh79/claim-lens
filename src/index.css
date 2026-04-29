@@ -130,36 +130,73 @@
   }
 }
 
-/* ─── Light-theme text overrides ────────────────────────────────────────────
-   Tailwind compiles e.g. .text-slate-200 to a very light grey which is
-   invisible on a white background.  These scoped rules flip the palette.    */
+/* ─── Light-theme overrides ─────────────────────────────────────────────────
+   Tailwind's dark-palette classes (slate-200, *-400 accents, white/* opacities)
+   are invisible or washed-out on a light background.  These rules flip the
+   palette so every token stays readable without touching component code.      */
 
-[data-theme="light"] .text-white,
-[data-theme="light"] .text-slate-100,
+/* ── Slate text ──
+   text-white / text-slate-100 are ONLY overridden inside glass surfaces.
+   Colored-background elements (e.g. bg-blue-600 nav buttons) must keep white. */
+[data-theme="light"] .glass .text-white,
+[data-theme="light"] .glass-elevated .text-white,
+[data-theme="light"] .glass-sm .text-white,
+[data-theme="light"] .glass .text-slate-100,
+[data-theme="light"] .glass-elevated .text-slate-100 { color: #0f172a; }
+
 [data-theme="light"] .text-slate-200 { color: #0f172a; }
 
 [data-theme="light"] .text-slate-300  { color: #1e293b; }
 [data-theme="light"] .text-slate-400  { color: #334155; }
 [data-theme="light"] .text-slate-500  { color: #475569; }
 [data-theme="light"] .text-slate-600  { color: #64748b; }
+[data-theme="light"] .text-slate-700  { color: #334155; }
 
-/* Borders */
+/* ── Accent text — *-400 variants are too pale on white, shift to *-600/700 ── */
+[data-theme="light"] .text-blue-400    { color: #2563eb; }
+[data-theme="light"] .text-blue-300    { color: #1d4ed8; }
+[data-theme="light"] .text-emerald-400 { color: #059669; }
+[data-theme="light"] .text-emerald-500 { color: #047857; }
+[data-theme="light"] .text-red-400     { color: #dc2626; }
+[data-theme="light"] .text-red-500     { color: #b91c1c; }
+[data-theme="light"] .text-amber-400   { color: #b45309; }
+[data-theme="light"] .text-amber-300   { color: #92400e; }
+[data-theme="light"] .text-cyan-400    { color: #0891b2; }
+[data-theme="light"] .text-violet-400  { color: #6d28d9; }
+[data-theme="light"] .text-orange-400  { color: #c2410c; }
+
+/* ── Section labels inherit no color — make them slate-500 in light ── */
+[data-theme="light"] .section-label { color: #475569; }
+
+/* ── Borders (white-opacity → dark-opacity equivalents) ── */
+[data-theme="light"] .border-white\/\[0\.04\] { border-color: rgba(15,23,42,0.07); }
 [data-theme="light"] .border-white\/\[0\.05\],
 [data-theme="light"] .border-white\/\[0\.06\],
 [data-theme="light"] .border-white\/\[0\.07\],
 [data-theme="light"] .border-white\/\[0\.08\],
-[data-theme="light"] .border-white\/10 { border-color: rgba(15,23,42,0.10); }
+[data-theme="light"] .border-white\/10        { border-color: rgba(15,23,42,0.10); }
+[data-theme="light"] .border-white\/\[0\.09\],
+[data-theme="light"] .border-white\/\[0\.15\] { border-color: rgba(15,23,42,0.14); }
 
-/* Subtle bg surfaces used inside cards */
-[data-theme="light"] .bg-white\/\[0\.02\],
-[data-theme="light"] .bg-white\/\[0\.025\],
-[data-theme="light"] .bg-white\/\[0\.03\],
-[data-theme="light"] .bg-white\/\[0\.04\],
-[data-theme="light"] .bg-white\/\[0\.05\],
-[data-theme="light"] .bg-white\/\[0\.06\] { background-color: rgba(15,23,42,0.04); }
+/* ── Subtle bg surfaces (white-opacity → very-light dark-opacity) ── */
+[data-theme="light"] .bg-white\/\[0\.015\]   { background-color: rgba(15,23,42,0.02); }
+[data-theme="light"] .bg-white\/\[0\.02\]    { background-color: rgba(15,23,42,0.03); }
+[data-theme="light"] .bg-white\/\[0\.025\]   { background-color: rgba(15,23,42,0.03); }
+[data-theme="light"] .bg-white\/\[0\.03\]    { background-color: rgba(15,23,42,0.04); }
+[data-theme="light"] .bg-white\/\[0\.04\]    { background-color: rgba(15,23,42,0.04); }
+[data-theme="light"] .bg-white\/\[0\.05\]    { background-color: rgba(15,23,42,0.05); }
+[data-theme="light"] .bg-white\/\[0\.06\]    { background-color: rgba(15,23,42,0.06); }
+[data-theme="light"] .bg-white\/\[0\.09\]    { background-color: rgba(15,23,42,0.07); }
 
-/* Skeleton loader */
-[data-theme="light"] .bg-white\/\[0\.06\] { background-color: rgba(15,23,42,0.06); }
+/* ── Hover bg surfaces ── */
+[data-theme="light"] .hover\:bg-white\/\[0\.02\]:hover  { background-color: rgba(15,23,42,0.04); }
+[data-theme="light"] .hover\:bg-white\/\[0\.05\]:hover  { background-color: rgba(15,23,42,0.06); }
+[data-theme="light"] .hover\:bg-white\/\[0\.025\]:hover { background-color: rgba(15,23,42,0.04); }
+[data-theme="light"] .hover\:bg-white\/\[0\.09\]:hover  { background-color: rgba(15,23,42,0.08); }
+
+/* ── Black opacity elements (day-badge backgrounds, overlays) ── */
+[data-theme="light"] .bg-black\/30 { background-color: rgba(15,23,42,0.08); }
+[data-theme="light"] .bg-black\/40 { background-color: rgba(15,23,42,0.10); }
 
 /* Animations */
 @keyframes fadeIn  { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }

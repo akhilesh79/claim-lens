@@ -26,7 +26,7 @@ export function Header() {
             <span className='text-sm font-bold tracking-tight' style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
               ClaimLens
             </span>
-            <span className='hidden sm:inline text-xs ml-1.5' style={{ color: isDark ? '#64748b' : '#94a3b8' }}>
+            <span className='hidden sm:inline text-xs ml-1.5' style={{ color: isDark ? '#64748b' : '#64748b' }}>
               AI Review Platform
             </span>
           </div>
@@ -64,7 +64,7 @@ export function Header() {
                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40'
                    : isDark
                      ? 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.05]'
-                     : 'hover:text-slate-800 hover:bg-black/[0.05]'
+                     : 'text-slate-500 hover:text-slate-800 hover:bg-black/[0.05]'
                }`
             }
           >
@@ -99,7 +99,7 @@ export function Header() {
             <div className='w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-[10px] font-bold text-white'>
               AI
             </div>
-            <span className='hidden sm:block text-xs' style={{ color: isDark ? '#64748b' : '#94a3b8' }}>
+            <span className='hidden sm:block text-xs' style={{ color: isDark ? '#64748b' : '#64748b' }}>
               Reviewer
             </span>
           </div>

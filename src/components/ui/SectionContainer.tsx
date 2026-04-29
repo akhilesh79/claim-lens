@@ -25,11 +25,11 @@ export function SectionContainer({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className={`glass rounded-2xl overflow-hidden ${className}`}>
+    <div className={`glass rounded-2xl overflow-hidden h-full flex flex-col ${className}`}>
       <button
         type="button"
         onClick={() => collapsible && setOpen((p) => !p)}
-        className={`w-full flex items-center justify-between px-5 py-3.5 transition-colors ${
+        className={`w-full flex items-center justify-between px-5 py-3.5 transition-colors flex-shrink-0 ${
           collapsible ? 'cursor-pointer hover:bg-white/[0.025]' : 'cursor-default'
         }`}
       >
@@ -60,12 +60,15 @@ export function SectionContainer({
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className="overflow-hidden"
+            className="overflow-hidden border-t border-white/[0.05]"
           >
-            <div className="px-5 pb-5 border-t border-white/[0.05]">{children}</div>
+            <div className="px-5 pb-5">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Spacer pushes card body to fill grid cell height */}
+      <div className="flex-1" />
     </div>
   );
 }

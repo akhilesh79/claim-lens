@@ -1,70 +1,231 @@
-import type { ImagingAnalysis } from '@/types/imaging';
+import type { ImagingApiResponse } from '@/types/imaging';
 
-export const mockImagingAnalysis: ImagingAnalysis = {
-  claimId: 'CLM-2024-002',
-  patient: 'Priya Venkataraman, F/34',
-  modality: 'X-Ray · CT · MRI',
-  bodyPart: 'Lower Leg (Tibia)',
-  studyDate: '15 Oct 2024',
-  reviewer: 'Dr. A. Menon (AI-Assisted)',
-  status: 'CONDITIONAL',
-  confidence: 89,
-  clinicalRisk: 'Medium',
-  keyFindings: [
-    { text: 'AI detected mid-shaft tibia fracture with 94% confidence', consistent: true },
-    { text: 'Hospital report confirms minor fracture — findings align', consistent: true },
-    { text: 'No imaging evidence of ligament tear (reported in documents)', consistent: false },
-    { text: 'AI severity assessment (Moderate) conflicts with report (Minor)', consistent: false },
-  ],
-  aiFindings: [
-    { name: 'Tibia Fracture', detected: true, confidence: 94, severity: 'Moderate' },
-    { name: 'Soft Tissue Swelling', detected: true, confidence: 88, severity: 'Mild' },
-    { name: 'Infiltration', detected: true, confidence: 67, severity: 'Mild' },
-    { name: 'Fluid Accumulation', detected: false, confidence: 12 },
-    { name: 'Ligament Tear', detected: false, confidence: 8 },
-    { name: 'Tumour / Mass', detected: false, confidence: 3 },
-  ],
-  imageQuality: 'Moderate',
-  images: [
-    { id: 'img-1', modality: 'X-Ray', day: 1, date: '15 Oct 2024', finding: 'Fracture Line Visible', consistent: true },
-    { id: 'img-2', modality: 'CT Scan', day: 2, date: '16 Oct 2024', finding: 'Fracture Confirmed, No Displacement', consistent: true },
-    { id: 'img-3', modality: 'MRI', day: 4, date: '18 Oct 2024', finding: 'Early Healing Stage, Oedema Present', consistent: true },
-  ],
-  consistencyScore: 91,
-  nlpExtraction: {
-    diagnosis: 'Tibial Shaft Fracture',
-    severity: 'Minor',
-    findings: ['Ligament tear', 'Soft tissue swelling', 'Periosteal reaction'],
-    extractionConfidence: 'High',
+export const mockImagingApiResponse: ImagingApiResponse = {
+  claim_id: 'BOCW_GJ_R3_2026040310046613_ER',
+  package: 'MC011A',
+  model: 'accounts/ajeya-rao-k-eckusf6m/deployments/euufjyfd',
+  n_images: 24,
+  generated_ms: 5505,
+  header: {
+    claim_id: 'BOCW_GJ_R3_2026040310046613_ER',
+    patient_name: null,
+    modality: 'Coronary Angiogram',
+    body_part: 'Coronary tree — left system',
+    study_date: '03/04/2026',
+    reviewer: null,
   },
-  correlationRows: [
-    { finding: 'Tibia Fracture', imageAI: true, report: true, match: 'match' },
-    { finding: 'Ligament Tear', imageAI: false, report: true, match: 'mismatch' },
-    { finding: 'Fluid Collection', imageAI: false, report: false, match: 'match' },
-    { finding: 'Severity Level', imageAI: null, report: null, match: 'partial', aiValue: 'Moderate', reportValue: 'Minor' },
-    { finding: 'Soft Tissue Swelling', imageAI: true, report: true, match: 'match' },
-    { finding: 'Infiltration', imageAI: true, report: false, match: 'mismatch' },
-  ],
-  inconsistencies: [
-    { type: 'warning', description: 'Possible exaggeration: Ligament tear reported but not detected in any imaging study' },
-    { type: 'warning', description: 'Severity underreported: AI assessment is Moderate; hospital report states Minor' },
-    { type: 'pass', description: 'No hidden or additional findings detected beyond submitted report' },
-  ],
-  stgAlignment: {
-    claimedPackage: 'Major Fracture Surgery',
-    items: [
-      { evidence: 'Confirmed fracture on imaging', present: true, status: 'pass' },
-      { evidence: 'Surgical planning imaging available', present: true, status: 'pass' },
-      { evidence: 'Severity justification for Major package', present: false, status: 'warn' },
-      { evidence: 'Neurovascular assessment documented', present: true, status: 'pass' },
+  status: {
+    consistency: 'consistent',
+    confidence_pct: 95,
+    clinical_risk_score: 'Medium',
+    key_findings: [
+      {
+        finding: 'Stent deployment in OM1 artery',
+        ai_detected: true,
+        report_mentioned: true,
+        note: null,
+      },
+      {
+        finding: '95% lesion in OM branch',
+        ai_detected: true,
+        report_mentioned: true,
+        note: null,
+      },
+      {
+        finding: '99% lesion in non-dominant artery',
+        ai_detected: true,
+        report_mentioned: true,
+        note: null,
+      },
+      {
+        finding: 'PCI with two drug-eluting stents (DES)',
+        ai_detected: true,
+        report_mentioned: true,
+        note: null,
+      },
+      {
+        finding: 'TIMI flow grade 3 post-procedure',
+        ai_detected: false,
+        report_mentioned: true,
+        note: null,
+      },
     ],
-    complianceScore: 83,
   },
-  radiologyTimeline: [
-    { day: 1, modality: 'X-Ray', purpose: 'Initial Diagnosis' },
-    { day: 2, modality: 'CT Scan', purpose: 'Fracture Confirmation' },
-    { day: 4, modality: 'MRI', purpose: 'Soft Tissue & Healing Assessment' },
-    { day: 5, modality: 'Surgery', purpose: 'Surgical Intervention' },
-  ],
-  timelineLogical: true,
+  scan_viewer: {
+    primary_image_source: '000009__BOCW_GJ_R3_2026040310046613__7a877f13-90de-4c5d-b2c8-c47d9bb0e2dd_compressed.pdf',
+    detected_regions: [],
+    ai_overlays_available: false,
+  },
+  ai_clinical_findings: {
+    fracture: {
+      present: null,
+      confidence_pct: null,
+      evidence: null,
+    },
+    fluid_accumulation: {
+      present: null,
+      confidence_pct: null,
+      evidence: null,
+    },
+    tumor_mass: {
+      present: null,
+      confidence_pct: null,
+      evidence: null,
+    },
+    infiltration: {
+      severity: null,
+      confidence_pct: null,
+      evidence: null,
+    },
+    image_quality: null,
+  },
+  multi_image_analysis: {
+    entries: [
+      {
+        modality: 'Coronary Angiogram',
+        day: 1,
+        date: '03/04/2026',
+        finding: 'Coronary tree — left system',
+        confirmed: true,
+      },
+      {
+        modality: 'Typed report',
+        day: 1,
+        date: '03/04/2026',
+        finding: 'Coronary tree — left system',
+        confirmed: true,
+      },
+      {
+        modality: 'Stamp/Signature',
+        day: null,
+        date: null,
+        finding: 'N/A',
+        confirmed: false,
+      },
+      {
+        modality: 'Chest X-Ray',
+        day: 2,
+        date: '04/04/2026',
+        finding: 'Chest (PA)',
+        confirmed: false,
+      },
+    ],
+    consistency_score_pct: null,
+  },
+  report_nlp_extraction: {
+    reported_diagnosis: null,
+    reported_severity: null,
+    reported_findings: [],
+    extraction_confidence: null,
+  },
+  finding_correlation: {
+    rows: [
+      {
+        finding: 'Stent deployment in OM1 artery',
+        image_ai: true,
+        report: true,
+        match: true,
+      },
+      {
+        finding: '95% lesion in OM branch',
+        image_ai: true,
+        report: true,
+        match: true,
+      },
+      {
+        finding: '99% lesion in non-dominant artery',
+        image_ai: true,
+        report: true,
+        match: true,
+      },
+      {
+        finding: 'PCI with two drug-eluting stents (DES)',
+        image_ai: true,
+        report: true,
+        match: true,
+      },
+      {
+        finding: 'TIMI flow grade 3 post-procedure',
+        image_ai: false,
+        report: true,
+        match: false,
+      },
+    ],
+    consistency_score_pct: 80,
+  },
+  inconsistency_detection: {
+    possible_exaggerations: [],
+    underreported_findings: [],
+    hidden_findings: [],
+  },
+  stg_alignment: {
+    claimed_package: 'MC011A',
+    evidence_required: [],
+    stg_compliance_score_pct: null,
+  },
+  radiology_timeline: {
+    events: [
+      {
+        day: 1,
+        date: '03/04/2026',
+        event: 'Coronary Angiogram',
+      },
+      {
+        day: 1,
+        date: '03/04/2026',
+        event: 'Typed report',
+      },
+      {
+        day: 2,
+        date: '04/04/2026',
+        event: 'Chest X-Ray',
+      },
+      {
+        day: 2,
+        date: '04/04/2026',
+        event: 'Typed report',
+      },
+    ],
+    logical: true,
+  },
+  patient: {
+    name: null,
+    age: '63 years',
+    sex: 'Male',
+    id_numbers: ['UC003043', 'UC003042', 'UI-2234', 'U.I.-2234', 'UT-2234'],
+  },
+  hospital: {
+    name: 'Sai Hospital, Ahmedabad; Lions Hospital, Palanpur',
+    location: 'Ahmedabad, Gujarat',
+    doctors: ['Dr. Niles H. Patel (Gami)', 'M.D. (Medicine) DNB (Cardiology)'],
+  },
+  encounter: {
+    date_range: '03/04/2026 to 04/04/2026',
+    all_dates: ['03/04/2026', '03/104/2026', '04/04/2026'],
+    primary_procedure: 'PCI with two drug-eluting stents in OM1 artery',
+    package_code: 'MC011A',
+  },
+  image_inventory: {
+    total_images: 24,
+    by_type: {
+      'Coronary Angiogram': 19,
+      'Chest X-Ray': 1,
+      'Typed report': 5,
+      'Stamp/Signature': 5,
+    },
+    stages_present: ['intra-procedure', 'post-procedure'],
+    languages_seen: ['English'],
+  },
+  clinical_narrative:
+    'A 63-year-old male underwent a percutaneous coronary intervention (PCI) with two XIENCE PRIME drug-eluting stents deployed in the OM1 artery. Intra-procedure fluoroscopic images show guidewire and catheter placement during angiography. Post-procedure typed reports and hand-drawn schematics detail lesion severity and stent specifications. A chest X-ray was also performed on 04/04/2026.',
+  completeness: {
+    has_pre_procedure_imaging: false,
+    has_intra_procedure_imaging: true,
+    has_post_procedure_imaging: true,
+    has_typed_report: true,
+    has_handwritten_notes: true,
+    has_signed_stamp: true,
+    notes: null,
+  },
+  concerns_or_gaps: [],
 };
