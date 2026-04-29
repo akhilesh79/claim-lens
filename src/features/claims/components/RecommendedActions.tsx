@@ -75,7 +75,7 @@ export function RecommendedActions({ actions, status, claimId }: Props) {
             </span>
             <StatusBadge status={status} size="sm" />
           </div>
-          <ul className="space-y-2">
+          <ul className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
             {actions.map((action, i) => (
               <motion.li
                 key={i}

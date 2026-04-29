@@ -7,6 +7,7 @@ import type { VisualProof } from '@/types/claims';
 
 interface Props {
   proofs: VisualProof[];
+  className?: string;
 }
 
 const ICONS: Record<string, string> = {
@@ -17,7 +18,7 @@ const ICONS: Record<string, string> = {
   'Pharmacy Seal': '💊',
 };
 
-export function VisualProofPanel({ proofs }: Props) {
+export function VisualProofPanel({ proofs, className }: Props) {
   const dispatch = useAppDispatch();
 
   return (
@@ -25,13 +26,10 @@ export function VisualProofPanel({ proofs }: Props) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.26 }}
+      className={`flex flex-col ${className ?? ''}`}
     >
-      <SectionContainer
-        title="Visual Proof Detected"
-        icon={<FiEye size={14} />}
-        defaultOpen
-      >
-        <div className="space-y-2 pt-3">
+      <SectionContainer title='Visual Proof Detected' icon={<FiEye size={14} />} defaultOpen>
+        <div className='space-y-2 pt-3'>
           {proofs.map((proof, i) => (
             <motion.div
               key={proof.type}
@@ -39,12 +37,13 @@ export function VisualProofPanel({ proofs }: Props) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.05 * i }}
               className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all
-                ${proof.detected
-                  ? 'border-emerald-500/15 hover:border-emerald-500/25 hover:bg-emerald-500/[0.04]'
-                  : 'border-slate-700/50 bg-white/[0.01]'
+                ${
+                  proof.detected
+                    ? 'border-emerald-500/15 hover:border-emerald-500/25 hover:bg-emerald-500/[0.04]'
+                    : 'border-slate-700/50 bg-white/[0.01]'
                 }`}
             >
-              <div className="flex items-center gap-2.5">
+              <div className='flex items-center gap-2.5'>
                 <span className={`text-base ${!proof.detected ? 'grayscale opacity-40' : ''}`}>
                   {ICONS[proof.type] ?? '📄'}
                 </span>
@@ -53,7 +52,7 @@ export function VisualProofPanel({ proofs }: Props) {
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className='flex items-center gap-2'>
                 <Tooltip content={proof.detected ? 'Detected' : 'Not found'}>
                   <span
                     className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold
@@ -65,7 +64,7 @@ export function VisualProofPanel({ proofs }: Props) {
                 {proof.detected && (
                   <button
                     onClick={() => dispatch(setSelectedVisualProof(proof.type))}
-                    className="text-[10px] font-semibold text-blue-400 hover:text-blue-300 px-2 py-1 rounded-md hover:bg-blue-500/10 transition-colors"
+                    className='text-[10px] font-semibold text-blue-400 hover:text-blue-300 px-2 py-1 rounded-md hover:bg-blue-500/10 transition-colors'
                   >
                     View
                   </button>

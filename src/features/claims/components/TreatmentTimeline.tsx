@@ -6,9 +6,10 @@ import type { TimelineEvent } from '@/types/claims';
 
 interface Props {
   timeline: TimelineEvent[];
+  className?: string;
 }
 
-export function TreatmentTimeline({ timeline }: Props) {
+export function TreatmentTimeline({ timeline, className }: Props) {
   const gapDay = timeline.find((e) => e.hasGap)?.day;
 
   const entries: TimelineEntry[] = timeline.map((ev) => ({
@@ -25,6 +26,7 @@ export function TreatmentTimeline({ timeline }: Props) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.22 }}
+      className={`flex flex-col ${className ?? ''}`}
     >
       <SectionContainer
         title="Treatment Timeline"

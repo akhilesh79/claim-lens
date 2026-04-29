@@ -5,9 +5,10 @@ import type { DocumentInventory as TDocumentInventory } from '@/types/claims';
 
 interface Props {
   inventory: TDocumentInventory;
+  className?: string;
 }
 
-export function DocumentInventory({ inventory }: Props) {
+export function DocumentInventory({ inventory, className }: Props) {
   const present = inventory.documents.filter((d) => d.present).length;
   const total = inventory.documents.length;
 
@@ -16,6 +17,7 @@ export function DocumentInventory({ inventory }: Props) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.18 }}
+      className={`flex flex-col ${className ?? ''}`}
     >
       <SectionContainer
         title="Document Inventory"

@@ -8,6 +8,7 @@ import type { RuleStatus } from '@/types/common';
 interface Props {
   rules: STGRule[];
   complianceScore: number;
+  className?: string;
 }
 
 const STATUS_CELL: Record<RuleStatus, { icon: string; label: string; cls: string }> = {
@@ -16,7 +17,7 @@ const STATUS_CELL: Record<RuleStatus, { icon: string; label: string; cls: string
   fail: { icon: '✗', label: 'Fail', cls: 'text-red-400 bg-red-500/10' },
 };
 
-export function STGComplianceTable({ rules, complianceScore }: Props) {
+export function STGComplianceTable({ rules, complianceScore, className }: Props) {
   const columns: TableColumn<STGRule>[] = [
     {
       key: 'rule',
@@ -65,6 +66,7 @@ export function STGComplianceTable({ rules, complianceScore }: Props) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.15 }}
+      className={`flex flex-col ${className ?? ''}`}
     >
       <SectionContainer
         title="STG Compliance Engine"

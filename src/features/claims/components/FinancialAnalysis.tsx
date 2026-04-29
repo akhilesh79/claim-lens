@@ -11,6 +11,7 @@ import type { FinancialItem, FraudSignal } from '@/types/claims';
 interface Props {
   items: FinancialItem[];
   fraudSignals: FraudSignal[];
+  className?: string;
 }
 
 const STATUS_BADGE: Record<FinancialItem['status'], { icon: string; cls: string }> = {
@@ -35,7 +36,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
-export function FinancialAnalysis({ items, fraudSignals }: Props) {
+export function FinancialAnalysis({ items, fraudSignals, className }: Props) {
   const total = items.reduce((s, i) => s + i.amount, 0);
 
   const chartData = items.map((item) => ({
@@ -50,6 +51,7 @@ export function FinancialAnalysis({ items, fraudSignals }: Props) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.28 }}
+      className={`flex flex-col ${className ?? ''}`}
     >
       <SectionContainer
         title="Financial Analysis"

@@ -56,7 +56,17 @@ export default function ImagingDashboard() {
       {/* ── Header ─────────────────────────────────────────────── */}
       <ImagingHeaderPanel data={data} />
 
-      {/* ── Zone 1: Study context — 3 equal columns ────────────── */}
+      {/* ── Zone 1: Validation & Compliance — 3 equal columns ──── */}
+      <div>
+        <ZoneLabel label="Validation & Compliance" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <FindingCorrelationTable rows={data.correlationRows} consistencyScore={data.correlationScore} />
+          <InconsistencyDetection inconsistencies={data.inconsistencies} />
+          <STGAlignmentPanel stgAlignment={data.stgAlignment} />
+        </div>
+      </div>
+
+      {/* ── Zone 2: Study context — 3 equal columns ────────────── */}
       <div>
         <ZoneLabel label="Study Context" />
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -72,13 +82,13 @@ export default function ImagingDashboard() {
         </div>
       </div>
 
-      {/* ── Zone 2: Timeline — full width ──────────────────────── */}
+      {/* ── Zone 3: Timeline — full width ──────────────────────── */}
       <div>
         <ZoneLabel label="Timeline" />
         <RadiologyTimeline timeline={data.radiologyTimeline} isLogical={data.timelineLogical} />
       </div>
 
-      {/* ── Zone 3: AI Analysis — 2 equal columns ──────────────── */}
+      {/* ── Zone 4: AI Analysis — 2 equal columns ──────────────── */}
       <div>
         <ZoneLabel label="AI Analysis" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -87,17 +97,7 @@ export default function ImagingDashboard() {
         </div>
       </div>
 
-      {/* ── Zone 4: Validation & Compliance — 3 equal columns ──── */}
-      <div>
-        <ZoneLabel label="Validation & Compliance" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <FindingCorrelationTable rows={data.correlationRows} consistencyScore={data.correlationScore} />
-          <InconsistencyDetection inconsistencies={data.inconsistencies} />
-          <STGAlignmentPanel stgAlignment={data.stgAlignment} />
-        </div>
-      </div>
-
-      {/* ── Zone 5: Documentation — 2 equal columns ────────────── */}
+      {/* ── Zone 5: Documentation ───────────────────────────────── */}
       <div>
         <ZoneLabel label="Documentation" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

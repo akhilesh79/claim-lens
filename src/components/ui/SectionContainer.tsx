@@ -27,7 +27,7 @@ export function SectionContainer({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className={`glass rounded-2xl overflow-hidden h-full flex flex-col ${className}`}>
+    <div className={`glass rounded-2xl overflow-hidden h-full flex-1 flex flex-col ${className}`}>
       <button
         type='button'
         onClick={() => collapsible && setOpen((p) => !p)}
@@ -62,7 +62,7 @@ export function SectionContainer({
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className='overflow-hidden border-t border-white/[0.05]'
+            className='border-t border-white/[0.05]'
           >
             <div className={`px-5 pb-5 overflow-y-auto ${maxH}`}>{children}</div>
           </motion.div>

@@ -15,14 +15,14 @@ import { RecommendedActions } from '@/features/claims/components/RecommendedActi
 
 function ErrorState({ message }: { message: string }) {
   return (
-    <div className="flex items-center justify-center min-h-[40vh]">
-      <div className="glass rounded-2xl p-8 text-center max-w-md">
-        <div className="text-4xl mb-3">⚠️</div>
-        <h3 className="text-lg font-semibold text-red-400 mb-2">Failed to Load Claim</h3>
-        <p className="text-sm text-slate-400">{message}</p>
+    <div className='flex items-center justify-center min-h-[40vh]'>
+      <div className='glass rounded-2xl p-8 text-center max-w-md'>
+        <div className='text-4xl mb-3'>⚠️</div>
+        <h3 className='text-lg font-semibold text-red-400 mb-2'>Failed to Load Claim</h3>
+        <p className='text-sm text-slate-400'>{message}</p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-sm text-slate-300 transition-colors"
+          className='mt-4 px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-sm text-slate-300 transition-colors'
         >
           Retry
         </button>
@@ -42,39 +42,25 @@ export default function ClaimDashboard() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-4"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className='space-y-4'>
       {/* Sticky summary header */}
-      <div className="sticky top-14 z-30 pt-1 pb-1 -mx-1 px-1">
+      <div className='sticky top-14 z-30 pt-1 pb-1 -mx-1 px-1'>
         <DecisionSummaryPanel data={data} />
       </div>
 
       {/* Recommended actions — directly after header */}
-      <RecommendedActions
-        actions={data.recommendedActions}
-        status={data.status}
-        claimId={data.summary.id}
-      />
+      <RecommendedActions actions={data.recommendedActions} status={data.status} claimId={data.summary.id} />
 
-      {/* Two-column layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        {/* Left column (40%) */}
-        <div className="lg:col-span-2 space-y-4">
-          <PatientClaimCard summary={data.summary} />
-          <DocumentInventory inventory={data.documentInventory} />
-          <VisualProofPanel proofs={data.visualProofs} />
-        </div>
+      {/* Flat 5-col grid — each component is a direct grid item */}
+      <div className='grid grid-cols-1 lg:grid-cols-5 gap-4'>
+        <PatientClaimCard   summary={data.summary}                                        className="lg:col-span-2" />
+        <STGComplianceTable rules={data.stgRules} complianceScore={data.complianceScore} className="lg:col-span-3" />
 
-        {/* Right column (60%) */}
-        <div className="lg:col-span-3 space-y-4">
-          <STGComplianceTable rules={data.stgRules} complianceScore={data.complianceScore} />
-          <TreatmentTimeline timeline={data.timeline} />
-          <FinancialAnalysis items={data.financialItems} fraudSignals={data.fraudSignals} />
-        </div>
+        <DocumentInventory  inventory={data.documentInventory}                            className="lg:col-span-2" />
+        <TreatmentTimeline  timeline={data.timeline}                                      className="lg:col-span-3" />
+
+        <VisualProofPanel   proofs={data.visualProofs}                                    className="lg:col-span-2" />
+        <FinancialAnalysis  items={data.financialItems} fraudSignals={data.fraudSignals}  className="lg:col-span-3" />
       </div>
 
       {/* Document preview modal (portal-style via Redux) */}

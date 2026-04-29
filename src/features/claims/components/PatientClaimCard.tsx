@@ -6,6 +6,7 @@ import type { ClaimSummary } from '@/types/claims';
 
 interface Props {
   summary: ClaimSummary;
+  className?: string;
 }
 
 const rows: { label: string; key: keyof ClaimSummary; format?: (v: unknown) => string }[] = [
@@ -19,12 +20,13 @@ const rows: { label: string; key: keyof ClaimSummary; format?: (v: unknown) => s
   { label: 'Claimed Amount', key: 'claimedAmount', format: (v) => formatCurrency(v as number) },
 ];
 
-export function PatientClaimCard({ summary }: Props) {
+export function PatientClaimCard({ summary, className }: Props) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.1 }}
+      className={`flex flex-col ${className ?? ''}`}
     >
       <SectionContainer
         title="Patient & Claim Summary"
