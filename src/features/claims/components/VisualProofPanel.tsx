@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { FiEye } from 'react-icons/fi';
 import { SectionContainer, Tooltip } from '@/components/ui';
 import { useAppDispatch } from '@/app/hooks';
 import { setSelectedVisualProof } from '@/features/ui/uiSlice';
@@ -27,11 +28,7 @@ export function VisualProofPanel({ proofs }: Props) {
     >
       <SectionContainer
         title="Visual Proof Detected"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 100 6 3 3 0 000-6z" />
-          </svg>
-        }
+        icon={<FiEye size={14} />}
         defaultOpen
       >
         <div className="space-y-2 pt-3">

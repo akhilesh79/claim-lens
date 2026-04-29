@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { FiCheckCircle } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { setSelectedVisualProof } from '@/features/ui/uiSlice';
 
@@ -80,9 +81,7 @@ export function DocumentPreviewModal() {
               </div>
 
               <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
-                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
-                </svg>
+                <FiCheckCircle size={12} color="#22c55e" />
                 Authenticity confirmed · Detected with {proofType === 'QR / Barcode' ? '99' : '96'}% confidence
               </div>
             </div>

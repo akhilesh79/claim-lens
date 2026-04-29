@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { FiFileText } from 'react-icons/fi';
 import { SectionContainer } from '@/components/ui';
 import type { NLPExtraction } from '@/types/imaging';
 import type { ExtractionConfidence } from '@/types/common';
@@ -22,11 +23,7 @@ export function NLPReportExtraction({ extraction }: Props) {
     >
       <SectionContainer
         title="Report NLP Extraction"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" />
-          </svg>
-        }
+        icon={<FiFileText size={14} />}
         defaultOpen
       >
         <div className="space-y-3 pt-3">

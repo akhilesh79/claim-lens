@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { FiAlertTriangle } from 'react-icons/fi';
 import { SectionContainer } from '@/components/ui';
 import type { Inconsistency } from '@/types/imaging';
 
@@ -18,11 +19,7 @@ export function InconsistencyDetection({ inconsistencies }: Props) {
     >
       <SectionContainer
         title="Inconsistency Detection"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" />
-          </svg>
-        }
+        icon={<FiAlertTriangle size={14} />}
         defaultOpen
       >
         <div className="space-y-2 pt-3">

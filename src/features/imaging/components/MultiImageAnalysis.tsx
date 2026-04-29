@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { FiGrid } from 'react-icons/fi';
 import { SectionContainer, ProgressBar } from '@/components/ui';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { setActiveImage } from '@/features/imaging/imagingSlice';
@@ -27,12 +28,7 @@ export function MultiImageAnalysis({ images, consistencyScore }: Props) {
     >
       <SectionContainer
         title="Multi-Image Analysis"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
-          </svg>
-        }
+        icon={<FiGrid size={14} />}
         defaultOpen
       >
         <div className="space-y-2 pt-3">

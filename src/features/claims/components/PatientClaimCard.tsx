@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { FiUser } from 'react-icons/fi';
 import { SectionContainer, InfoCard } from '@/components/ui';
 import { formatCurrency } from '@/utils/formatters';
 import type { ClaimSummary } from '@/types/claims';
@@ -27,11 +28,7 @@ export function PatientClaimCard({ summary }: Props) {
     >
       <SectionContainer
         title="Patient & Claim Summary"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-          </svg>
-        }
+        icon={<FiUser size={14} />}
         defaultOpen
       >
         {/* Patient name hero */}

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { FiCheckCircle } from 'react-icons/fi';
 import { SectionContainer, ProgressBar } from '@/components/ui';
 import type { CorrelationRow } from '@/types/imaging';
 import type { MatchStatus } from '@/types/common';
@@ -36,11 +37,7 @@ export function FindingCorrelationTable({ rows }: Props) {
     >
       <SectionContainer
         title="Finding Correlation"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
-          </svg>
-        }
+        icon={<FiCheckCircle size={14} />}
         defaultOpen
       >
         <div className="pt-3 overflow-x-auto">

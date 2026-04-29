@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { FiFileText } from 'react-icons/fi';
 import { SectionContainer, Tooltip } from '@/components/ui';
 import type { DocumentInventory as TDocumentInventory } from '@/types/claims';
 
@@ -18,11 +19,7 @@ export function DocumentInventory({ inventory }: Props) {
     >
       <SectionContainer
         title="Document Inventory"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" />
-          </svg>
-        }
+        icon={<FiFileText size={14} />}
         headerExtra={
           <span className="text-[10px] font-semibold text-slate-500 tabular-nums">
             {present}/{total}
