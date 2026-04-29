@@ -61,6 +61,7 @@
   *::-webkit-scrollbar-thumb:hover { background-color: var(--sb-thumb-hover); }
 
   body {
+    font-family: 'Sora', system-ui, sans-serif;
     background-color: var(--body-bg);
     background-image:
       radial-gradient(ellipse 80% 50% at 50% -20%, var(--body-glow-1) 0%, transparent 60%),
@@ -68,6 +69,9 @@
     min-height: 100vh;
     transition: background-color 0.25s ease;
   }
+
+  /* Poppins for all headings */
+  h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', system-ui, sans-serif; }
 }
 
 /* ─── Component utilities ───────────────────────────────────────────────────── */
@@ -115,8 +119,8 @@
     @apply bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent;
   }
 
-  /* Section label */
-  .section-label { @apply text-[10px] font-semibold uppercase tracking-[0.12em]; }
+  /* Section label — Poppins for all caps labels inside cards */
+  .section-label { @apply text-[10px] font-semibold uppercase tracking-[0.12em] font-heading; }
 
   /* Hover rows */
   .hover-row { @apply hover:bg-black/[0.025] transition-colors duration-150; }

@@ -193,7 +193,7 @@ export interface AIFinding {
 export interface ImageScan {
   id: string;
   modality: string;
-  day: number;
+  day: number | string;
   date: string;
   finding: string;
   consistent: boolean;

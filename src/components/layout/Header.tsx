@@ -23,7 +23,7 @@ export function Header() {
             <FiCheckCircle size={14} color='white' strokeWidth={2.5} />
           </div>
           <div>
-            <span className='text-sm font-bold tracking-tight' style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
+            <span className='text-sm font-bold tracking-tight font-heading' style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
               ClaimLens
             </span>
             <span className='hidden sm:inline text-xs ml-1.5' style={{ color: isDark ? '#64748b' : '#64748b' }}>

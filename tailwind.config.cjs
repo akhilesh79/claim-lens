@@ -4,8 +4,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        sans:    ['Sora', 'system-ui', 'sans-serif'],
+        heading: ['Poppins', 'system-ui', 'sans-serif'],
+        mono:    ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       animation: {
         'fade-in': 'fadeIn 0.35s ease-out',

@@ -30,7 +30,7 @@ function ErrorState({ message }: { message: string }) {
 function ZoneLabel({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-3 mb-3">
-      <span className="text-[9px] font-bold uppercase tracking-widest text-slate-500">{label}</span>
+      <span className="text-[9px] font-bold font-heading uppercase tracking-widest text-slate-500">{label}</span>
       <span className="flex-1 h-px border-t border-white/[0.07]" />
     </div>
   );

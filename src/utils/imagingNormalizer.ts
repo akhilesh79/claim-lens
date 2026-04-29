@@ -10,9 +10,12 @@ import type { Status, RiskLevel, MatchStatus, ExtractionConfidence } from '@/typ
 
 function mapConsistency(consistency: string): Status {
   switch (consistency.toLowerCase()) {
-    case 'consistent': return 'PASS';
-    case 'inconsistent': return 'FAIL';
-    default: return 'CONDITIONAL';
+    case 'consistent':
+      return 'PASS';
+    case 'inconsistent':
+      return 'FAIL';
+    default:
+      return 'CONDITIONAL';
   }
 }
 
@@ -63,17 +66,18 @@ function buildInconsistencies(raw: ImagingApiResponse['inconsistency_detection']
   const items: Inconsistency[] = [];
 
   raw.possible_exaggerations.forEach((d) =>
-    items.push({ type: 'warning', description: `Possible exaggeration: ${d}` })
+    items.push({ type: 'warning', description: `Possible exaggeration: ${d}` }),
   );
   raw.underreported_findings.forEach((d) =>
-    items.push({ type: 'warning', description: `Underreported finding: ${d}` })
+    items.push({ type: 'warning', description: `Underreported finding: ${d}` }),
   );
-  raw.hidden_findings.forEach((d) =>
-    items.push({ type: 'warning', description: `Hidden finding detected: ${d}` })
-  );
+  raw.hidden_findings.forEach((d) => items.push({ type: 'warning', description: `Hidden finding detected: ${d}` }));
 
   if (items.length === 0) {
-    items.push({ type: 'pass', description: 'No inconsistencies detected — AI findings are fully aligned with report' });
+    items.push({
+      type: 'pass',
+      description: 'No inconsistencies detected — AI findings are fully aligned with report',
+    });
   }
 
   return items;
@@ -109,7 +113,7 @@ export function normalizeImagingResponse(raw: ImagingApiResponse): ImagingAnalys
     reviewer: raw.header.reviewer,
 
     patient: {
-      name: raw.patient.name,
+      name: raw.patient.name ?? 'Unknown',
       age: raw.patient.age,
       sex: raw.patient.sex,
       idNumbers: raw.patient.id_numbers,
@@ -153,8 +157,8 @@ export function normalizeImagingResponse(raw: ImagingApiResponse): ImagingAnalys
     images: raw.multi_image_analysis.entries.map((entry, i) => ({
       id: `img-${i}`,
       modality: entry.modality,
-      day: entry.day,
-      date: entry.date,
+      day: entry.day ?? '-',
+      date: entry.date ?? '—',
       finding: entry.finding,
       consistent: entry.confirmed,
     })),

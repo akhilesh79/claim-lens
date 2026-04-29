@@ -35,7 +35,7 @@ export function SectionContainer({
       >
         <div className="flex items-center gap-2.5 min-w-0">
           {icon && <span className="text-blue-400 flex-shrink-0 text-base">{icon}</span>}
-          <h3 className="text-sm font-semibold text-slate-200 truncate">{title}</h3>
+          <h3 className="text-sm font-semibold font-heading text-slate-200 truncate">{title}</h3>
           {badge && <span className="flex-shrink-0">{badge}</span>}
         </div>
         <div className="flex items-center gap-3 flex-shrink-0 ml-3">

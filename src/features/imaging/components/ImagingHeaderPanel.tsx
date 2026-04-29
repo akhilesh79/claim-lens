@@ -55,7 +55,7 @@ export function ImagingHeaderPanel({ data }: Props) {
             <div className="text-center min-w-[72px]">
               <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Confidence</p>
               {data.confidence !== null ? (
-                <p className="text-2xl font-black text-white tabular-nums leading-none">
+                <p className="text-2xl font-black text-white tabular-nums leading-none font-heading">
                   <AnimatedCounter value={data.confidence} suffix="%" />
                 </p>
               ) : (
@@ -78,7 +78,7 @@ export function ImagingHeaderPanel({ data }: Props) {
 
             <div className="text-center min-w-[60px]">
               <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Images</p>
-              <p className="text-2xl font-black text-white tabular-nums leading-none">
+              <p className="text-2xl font-black text-white tabular-nums leading-none font-heading">
                 {data.totalImages}
               </p>
             </div>
