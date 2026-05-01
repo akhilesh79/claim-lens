@@ -22,7 +22,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['claims', 'imaging', 'forgery', 'ui'],
+  whitelist: ['claims', 'imaging', 'forgery'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
