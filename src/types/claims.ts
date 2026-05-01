@@ -2,7 +2,7 @@ import type { Status, RiskLevel, RuleStatus } from './common';
 
 export interface Patient {
   name: string;
-  age: number;
+  age: number | string;
   gender: string;
 }
 
@@ -61,6 +61,13 @@ export interface FraudSignal {
 }
 
 export interface ClaimDecision {
+  job_id: string;
+  claim_id: string;
+  package_code: string;
+  report: ClaimResult;
+}
+
+export interface ClaimResult {
   status: Status;
   confidence: number;
   riskScore: RiskLevel;

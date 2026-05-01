@@ -6,15 +6,15 @@ interface StatusBadgeProps {
 }
 
 const CONFIG: Record<Status, { icon: string; label: string; className: string; pulse: string }> = {
-  PASS: {
+  APPROVED: {
     icon: '✓',
-    label: 'PASS',
+    label: 'APPROVED',
     className: 'status-pass',
     pulse: 'bg-emerald-400',
   },
-  FAIL: {
+  REJECTED: {
     icon: '✗',
-    label: 'FAIL',
+    label: 'REJECTED',
     className: 'status-fail',
     pulse: 'bg-red-400',
   },

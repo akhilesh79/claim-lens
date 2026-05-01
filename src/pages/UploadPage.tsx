@@ -209,7 +209,7 @@ export default function UploadPage() {
 
     const [imagingResult, claimsResult, forgeryResult] = await Promise.allSettled([
       track('imaging', uploadImaging({ claimId, files }).unwrap()),
-      track('claims',  uploadClaims(files).unwrap()),
+      track('claims',  uploadClaims({ files, claimId }).unwrap()),
       track('forgery', uploadForgery(files).unwrap()),
     ]);
 

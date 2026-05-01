@@ -11,9 +11,9 @@ import type { Status, RiskLevel, MatchStatus, ExtractionConfidence } from '@/typ
 function mapConsistency(consistency: string): Status {
   switch (consistency.toLowerCase()) {
     case 'consistent':
-      return 'PASS';
+      return 'APPROVED';
     case 'inconsistent':
-      return 'FAIL';
+      return 'REJECTED';
     default:
       return 'CONDITIONAL';
   }

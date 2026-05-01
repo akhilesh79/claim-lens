@@ -1,4 +1,4 @@
-export type Status = 'PASS' | 'FAIL' | 'CONDITIONAL';
+export type Status = 'APPROVED' | 'REJECTED' | 'CONDITIONAL';
 
 export type RiskLevel = 'Low' | 'Medium' | 'High' | 'Critical';
 

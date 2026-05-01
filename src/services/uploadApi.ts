@@ -3,11 +3,17 @@ import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { ClaimDecision } from '@/types/claims';
 import type { ImagingApiResponse } from '@/types/imaging';
 import type { ForgeryApiResponse } from '@/types/forgery';
-import { IMAGING_API_BASE, CLAIMS_API_BASE, FORGERY_API_BASE } from '@/config/apiEndpoints';
+import { IMAGING_API_BASE, CLAIMS_API_BASE, CLAIMS_API_KEY, FORGERY_API_BASE } from '@/config/apiEndpoints';
 
 interface UploadImagingArgs {
   claimId: string;
   files: File[];
+}
+
+interface UploadClaimsArgs {
+  files: File[];
+  claimId: string;
+  packageCode?: string;
 }
 
 function toQueryError(e: unknown, status?: number): { error: FetchBaseQueryError } {
@@ -46,14 +52,17 @@ export const uploadApi = createApi({
       },
     }),
 
-    uploadForClaims: builder.mutation<ClaimDecision, File[]>({
-      queryFn: async (files) => {
+    uploadForClaims: builder.mutation<ClaimDecision, UploadClaimsArgs>({
+      queryFn: async ({ files, claimId, packageCode = 'SB039A' }) => {
         try {
           const form = new FormData();
-          files.forEach((f) => form.append('file', f));
+          files.forEach((f) => form.append('files', f));
+          form.append('claim_id', claimId);
+          form.append('package_code', packageCode);
 
-          const res = await fetch(`${CLAIMS_API_BASE}/api/translate`, {
+          const res = await fetch(`${CLAIMS_API_BASE}/api/upload`, {
             method: 'POST',
+            headers: { Authorization: `Bearer ${CLAIMS_API_KEY}` },
             body: form,
           });
 
@@ -69,6 +78,7 @@ export const uploadApi = createApi({
         }
       },
     }),
+
     uploadForForgery: builder.mutation<ForgeryApiResponse, File[]>({
       queryFn: async (files) => {
         try {
@@ -95,8 +105,4 @@ export const uploadApi = createApi({
   }),
 });
 
-export const {
-  useUploadForImagingMutation,
-  useUploadForClaimsMutation,
-  useUploadForForgeryMutation,
-} = uploadApi;
+export const { useUploadForImagingMutation, useUploadForClaimsMutation, useUploadForForgeryMutation } = uploadApi;
