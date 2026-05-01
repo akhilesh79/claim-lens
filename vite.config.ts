@@ -9,6 +9,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react':   ['react', 'react-dom', 'react-router-dom'],
+          'vendor-redux':   ['@reduxjs/toolkit', 'react-redux', 'redux-persist'],
+          'vendor-ui':      ['framer-motion', 'recharts'],
+          'vendor-pdf':     ['react-pdf'],
+          'vendor-icons':   ['react-icons'],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       // Route PDF.js fetch requests through localhost to bypass CORS.
