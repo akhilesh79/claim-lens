@@ -12,12 +12,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react':   ['react', 'react-dom', 'react-router-dom'],
-          'vendor-redux':   ['@reduxjs/toolkit', 'react-redux', 'redux-persist'],
-          'vendor-ui':      ['framer-motion', 'recharts'],
-          'vendor-pdf':     ['react-pdf'],
-          'vendor-icons':   ['react-icons'],
+        manualChunks(id) {
+          if (id.includes('node_modules/react-icons'))                                      return 'vendor-icons';
+          if (id.includes('node_modules/react-pdf') || id.includes('node_modules/pdfjs-dist')) return 'vendor-pdf';
+          if (id.includes('node_modules/framer-motion') || id.includes('node_modules/recharts')) return 'vendor-ui';
+          if (id.includes('node_modules/@reduxjs') || id.includes('node_modules/react-redux') || id.includes('node_modules/redux-persist')) return 'vendor-redux';
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) return 'vendor-react';
         },
       },
     },

@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { PageLayout } from '@/components/layout/PageLayout';
 
@@ -83,9 +83,9 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ThemeSyncer />
       <AppRoutes />
-    </BrowserRouter>
+    </HashRouter>
   );
 }
