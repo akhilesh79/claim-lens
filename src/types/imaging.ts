@@ -4,7 +4,7 @@ import type { Status, RiskLevel, MatchStatus, RuleStatus, ExtractionConfidence }
 
 export interface ApiKeyFinding {
   finding: string;
-  ai_detected: boolean;
+  ai_detected: boolean | null;
   report_mentioned: boolean;
   note: string | null;
 }
@@ -21,12 +21,23 @@ export interface ApiInfiltrationDetail {
   evidence: string | null;
 }
 
+export interface ApiDetectedRegion {
+  label: string;
+  image_source: string;
+  page: number;
+}
+
+export interface ApiEvidenceItem {
+  item: string;
+  present: boolean;
+}
+
 export interface ImagingApiResponse {
-  claim_id: string;
-  package: string;
-  model: string;
-  n_images: number;
-  generated_ms: number;
+  claim_id?: string;
+  package?: string;
+  model?: string;
+  n_images?: number;
+  generated_ms?: number;
   header: {
     claim_id: string;
     patient_name: string | null;
@@ -43,7 +54,7 @@ export interface ImagingApiResponse {
   };
   scan_viewer: {
     primary_image_source: string;
-    detected_regions: string[];
+    detected_regions: Array<string | ApiDetectedRegion>;
     ai_overlays_available: boolean;
   };
   ai_clinical_findings: {
@@ -72,9 +83,9 @@ export interface ImagingApiResponse {
   finding_correlation: {
     rows: Array<{
       finding: string;
-      image_ai: boolean;
-      report: boolean;
-      match: boolean;
+      image_ai: boolean | null;
+      report: boolean | null;
+      match: boolean | null;
     }>;
     consistency_score_pct: number | null;
   };
@@ -84,8 +95,8 @@ export interface ImagingApiResponse {
     hidden_findings: string[];
   };
   stg_alignment: {
-    claimed_package: string;
-    evidence_required: string[];
+    claimed_package: string | null;
+    evidence_required: Array<string | ApiEvidenceItem>;
     stg_compliance_score_pct: number | null;
   };
   radiology_timeline: {
@@ -111,7 +122,7 @@ export interface ImagingApiResponse {
     date_range: string;
     all_dates: string[];
     primary_procedure: string | null;
-    package_code: string;
+    package_code: string | null;
   };
   image_inventory: {
     total_images: number;
@@ -163,7 +174,7 @@ export interface ImageInventory {
 
 export interface ScanViewerInfo {
   primaryImageSource: string;
-  detectedRegions: string[];
+  detectedRegions: Array<string | ApiDetectedRegion>;
   aiOverlaysAvailable: boolean;
 }
 
@@ -227,7 +238,7 @@ export interface STGAlignmentItem {
 }
 
 export interface STGAlignment {
-  claimedPackage: string;
+  claimedPackage: string | null;
   items: STGAlignmentItem[];
   complianceScore: number | null;
 }

@@ -31,7 +31,8 @@ function mapExtractionConfidence(raw: string | null): ExtractionConfidence | nul
   return valid.includes(raw as ExtractionConfidence) ? (raw as ExtractionConfidence) : null;
 }
 
-function mapMatchStatus(match: boolean): MatchStatus {
+function mapMatchStatus(match: boolean | null): MatchStatus {
+  if (match === null) return 'partial';
   return match ? 'match' : 'mismatch';
 }
 
@@ -83,12 +84,17 @@ function buildInconsistencies(raw: ImagingApiResponse['inconsistency_detection']
   return items;
 }
 
-function buildSTGItems(evidenceRequired: string[]): STGAlignmentItem[] {
-  return evidenceRequired.map((evidence) => ({
-    evidence,
-    present: true,
-    status: 'pass' as const,
-  }));
+function buildSTGItems(evidenceRequired: ImagingApiResponse['stg_alignment']['evidence_required']): STGAlignmentItem[] {
+  return evidenceRequired.map((entry) => {
+    if (typeof entry === 'string') {
+      return { evidence: entry, present: true, status: 'pass' as const };
+    }
+    return {
+      evidence: entry.item,
+      present: entry.present,
+      status: entry.present ? ('pass' as const) : ('fail' as const),
+    };
+  });
 }
 
 function buildCorrelationRows(raw: ImagingApiResponse['finding_correlation']['rows']): CorrelationRow[] {
@@ -102,10 +108,10 @@ function buildCorrelationRows(raw: ImagingApiResponse['finding_correlation']['ro
 
 export function normalizeImagingResponse(raw: ImagingApiResponse): ImagingAnalysis {
   return {
-    claimId: raw.claim_id,
-    packageCode: raw.package,
-    modelId: raw.model,
-    totalImages: raw.n_images,
+    claimId: raw.claim_id ?? raw.header.claim_id,
+    packageCode: raw.package ?? raw.encounter?.package_code ?? raw.stg_alignment?.claimed_package ?? '',
+    modelId: raw.model ?? '',
+    totalImages: raw.n_images ?? raw.image_inventory?.total_images ?? 0,
 
     modality: raw.header.modality,
     bodyPart: raw.header.body_part,
@@ -127,7 +133,7 @@ export function normalizeImagingResponse(raw: ImagingApiResponse): ImagingAnalys
       dateRange: raw.encounter.date_range,
       allDates: raw.encounter.all_dates,
       primaryProcedure: raw.encounter.primary_procedure,
-      packageCode: raw.encounter.package_code,
+      packageCode: raw.encounter.package_code ?? '',
     },
     imageInventory: {
       totalImages: raw.image_inventory.total_images,
@@ -141,7 +147,7 @@ export function normalizeImagingResponse(raw: ImagingApiResponse): ImagingAnalys
     clinicalRisk: mapRiskLevel(raw.status.clinical_risk_score),
     keyFindings: raw.status.key_findings.map((kf) => ({
       text: kf.finding,
-      consistent: kf.ai_detected && kf.report_mentioned,
+      consistent: kf.ai_detected === null ? kf.report_mentioned : (kf.ai_detected && kf.report_mentioned),
       note: kf.note,
     })),
 
@@ -178,7 +184,7 @@ export function normalizeImagingResponse(raw: ImagingApiResponse): ImagingAnalys
 
     stgAlignment: {
       claimedPackage: raw.stg_alignment.claimed_package,
-      items: buildSTGItems(raw.stg_alignment.evidence_required),
+      items: buildSTGItems(raw.stg_alignment.evidence_required ?? []),
       complianceScore: raw.stg_alignment.stg_compliance_score_pct,
     },
 

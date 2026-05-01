@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
-import { useGetImagingAnalysisQuery } from '@/services/imagingApi';
 import { useAppSelector } from '@/app/hooks';
-import { ImagingDashboardSkeleton } from '@/components/ui';
 
 import { ImagingHeaderPanel } from '@/features/imaging/components/ImagingHeaderPanel';
 import { ImageViewer } from '@/features/imaging/components/ImageViewer';
@@ -15,13 +13,13 @@ import { STGAlignmentPanel } from '@/features/imaging/components/STGAlignmentPan
 import { CompletenessPanel } from '@/features/imaging/components/CompletenessPanel';
 import { RadiologyTimeline } from '@/features/imaging/components/RadiologyTimeline';
 
-function ErrorState({ message }: { message: string }) {
+function ApiErrorCard({ message }: { message: string }) {
   return (
     <div className="flex items-center justify-center min-h-[40vh]">
-      <div className="glass rounded-2xl p-8 text-center max-w-md">
-        <div className="text-4xl mb-3">⚠️</div>
-        <h3 className="text-lg font-semibold text-red-400 mb-2">Failed to Load Study</h3>
-        <p className="text-sm text-slate-400">{message}</p>
+      <div className="glass rounded-2xl p-8 text-center max-w-md space-y-3">
+        <div className="text-4xl">⚠️</div>
+        <h3 className="text-lg font-semibold text-red-400">Image Validation Engine Failed</h3>
+        <p className="text-sm text-slate-400 leading-relaxed">{message}</p>
       </div>
     </div>
   );
@@ -37,14 +35,11 @@ function ZoneLabel({ label }: { label: string }) {
 }
 
 export default function ImagingDashboard() {
-  const studyId = useAppSelector((s) => s.imaging.selectedStudyId);
-  const { data, isLoading, isError, error } = useGetImagingAnalysisQuery(studyId);
+  const data  = useAppSelector((s) => s.imaging.apiData);
+  const error = useAppSelector((s) => s.imaging.apiError);
 
-  if (isLoading) return <ImagingDashboardSkeleton />;
-  if (isError || !data) {
-    const msg = error && 'message' in error ? String(error.message) : 'Unknown error occurred';
-    return <ErrorState message={msg} />;
-  }
+  if (error) return <ApiErrorCard message={error} />;
+  if (!data)  return null;
 
   return (
     <motion.div

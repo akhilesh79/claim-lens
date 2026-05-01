@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGetClaimDecisionQuery } from '@/services/claimsApi';
 import { useAppSelector } from '@/app/hooks';
-import { ClaimDashboardSkeleton } from '@/components/ui';
+import type { ForgeryFileResult } from '@/types/forgery';
 
 import { DecisionSummaryPanel } from '@/features/claims/components/DecisionSummaryPanel';
 import { PatientClaimCard } from '@/features/claims/components/PatientClaimCard';
@@ -12,59 +12,72 @@ import { STGComplianceTable } from '@/features/claims/components/STGComplianceTa
 import { TreatmentTimeline } from '@/features/claims/components/TreatmentTimeline';
 import { FinancialAnalysis } from '@/features/claims/components/FinancialAnalysis';
 import { RecommendedActions } from '@/features/claims/components/RecommendedActions';
+import { DocumentForgeryPanel } from '@/features/claims/components/DocumentForgeryPanel';
+import { ForgeryDrawer } from '@/features/claims/components/ForgeryDrawer';
 
-function ErrorState({ message }: { message: string }) {
+function ApiErrorCard({ message }: { message: string }) {
   return (
     <div className='flex items-center justify-center min-h-[40vh]'>
-      <div className='glass rounded-2xl p-8 text-center max-w-md'>
-        <div className='text-4xl mb-3'>⚠️</div>
-        <h3 className='text-lg font-semibold text-red-400 mb-2'>Failed to Load Claim</h3>
-        <p className='text-sm text-slate-400'>{message}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className='mt-4 px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-sm text-slate-300 transition-colors'
-        >
-          Retry
-        </button>
+      <div className='glass rounded-2xl p-8 text-center max-w-md space-y-3'>
+        <div className='text-4xl'>⚠️</div>
+        <h3 className='text-lg font-semibold text-red-400'>Claim Decision Engine Failed</h3>
+        <p className='text-sm text-slate-400 leading-relaxed'>{message}</p>
       </div>
     </div>
   );
 }
 
 export default function ClaimDashboard() {
-  const claimId = useAppSelector((s) => s.claims.selectedClaimId);
-  const { data, isLoading, isError, error } = useGetClaimDecisionQuery(claimId);
+  const data         = useAppSelector((s) => s.claims.apiData);
+  const error        = useAppSelector((s) => s.claims.apiError);
+  const forgeryResults = useAppSelector((s) => s.forgery.results);
 
-  if (isLoading) return <ClaimDashboardSkeleton />;
-  if (isError || !data) {
-    const msg = error && 'message' in error ? String(error.message) : 'Unknown error occurred';
-    return <ErrorState message={msg} />;
-  }
+  const [drawerFile, setDrawerFile] = useState<ForgeryFileResult | null>(null);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className='space-y-4'>
-      {/* Sticky summary header */}
-      <div className='sticky top-14 z-30 pt-1 pb-1 -mx-1 px-1'>
-        <DecisionSummaryPanel data={data} />
-      </div>
 
-      {/* Recommended actions — directly after header */}
-      <RecommendedActions actions={data.recommendedActions} status={data.status} claimId={data.summary.id} />
+      {/* ── Claim Decision Engine ─────────────────────────────── */}
+      {error ? (
+        <ApiErrorCard message={error} />
+      ) : data ? (
+        <>
+          {/* Sticky summary header */}
+          <div className='sticky top-14 z-30 pt-1 pb-1 -mx-1 px-1'>
+            <DecisionSummaryPanel data={data} />
+          </div>
 
-      {/* Flat 5-col grid — each component is a direct grid item */}
-      <div className='grid grid-cols-1 lg:grid-cols-5 gap-4'>
-        <PatientClaimCard   summary={data.summary}                                        className="lg:col-span-2" />
-        <STGComplianceTable rules={data.stgRules} complianceScore={data.complianceScore} className="lg:col-span-3" />
+          {/* Recommended actions */}
+          <RecommendedActions actions={data.recommendedActions} status={data.status} claimId={data.summary.id} />
 
-        <DocumentInventory  inventory={data.documentInventory}                            className="lg:col-span-2" />
-        <TreatmentTimeline  timeline={data.timeline}                                      className="lg:col-span-3" />
+          {/* Flat 5-col grid */}
+          <div className='grid grid-cols-1 lg:grid-cols-5 gap-4'>
+            <PatientClaimCard   summary={data.summary}                                        className="lg:col-span-2" />
+            <STGComplianceTable rules={data.stgRules} complianceScore={data.complianceScore} className="lg:col-span-3" />
 
-        <VisualProofPanel   proofs={data.visualProofs}                                    className="lg:col-span-2" />
-        <FinancialAnalysis  items={data.financialItems} fraudSignals={data.fraudSignals}  className="lg:col-span-3" />
-      </div>
+            <DocumentInventory  inventory={data.documentInventory}                            className="lg:col-span-2" />
+            <TreatmentTimeline  timeline={data.timeline}                                      className="lg:col-span-3" />
 
-      {/* Document preview modal (portal-style via Redux) */}
+            <VisualProofPanel   proofs={data.visualProofs}                                    className="lg:col-span-2" />
+            <FinancialAnalysis  items={data.financialItems} fraudSignals={data.fraudSignals}  className="lg:col-span-3" />
+          </div>
+        </>
+      ) : null}
+
+      {/* ── Document Forgery Detection — always shown if available ── */}
+      {forgeryResults.length > 0 && (
+        <DocumentForgeryPanel
+          results={forgeryResults}
+          onSelect={setDrawerFile}
+        />
+      )}
+
+      {/* Modals & drawers */}
       <DocumentPreviewModal />
+      <ForgeryDrawer
+        result={drawerFile}
+        onClose={() => setDrawerFile(null)}
+      />
     </motion.div>
   );
 }
