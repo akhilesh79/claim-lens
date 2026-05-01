@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiCheckCircle, FiXCircle, FiLoader } from 'react-icons/fi';
 import { useAppDispatch } from '@/app/hooks';
 import { useUploadForImagingMutation, useUploadForClaimsMutation, useUploadForForgeryMutation } from '@/services/uploadApi';
 import { setClaimApiData, setClaimApiError } from '@/features/claims/claimsSlice';
@@ -70,25 +71,85 @@ function FileChip({ file, onRemove }: { file: File; onRemove: () => void }) {
   );
 }
 
-function LoadingOverlay() {
+type EngineStatus = 'loading' | 'done' | 'failed';
+
+const ENGINE_LABELS: { key: keyof EngineStatuses; label: string }[] = [
+  { key: 'claims',  label: 'Claim Decision Engine'     },
+  { key: 'imaging', label: 'Image Validation Engine'   },
+  { key: 'forgery', label: 'Document Forgery Detector' },
+];
+
+interface EngineStatuses {
+  claims:  EngineStatus;
+  imaging: EngineStatus;
+  forgery: EngineStatus;
+}
+
+function StatusIcon({ status }: { status: EngineStatus }) {
+  if (status === 'done')    return <FiCheckCircle size={15} className="text-emerald-400 flex-shrink-0" />;
+  if (status === 'failed')  return <FiXCircle     size={15} className="text-red-400 flex-shrink-0" />;
+  return (
+    <span className="flex-shrink-0 w-[15px] h-[15px] rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+  );
+}
+
+function LoadingOverlay({ statuses }: { statuses: EngineStatuses }) {
+  const allDone   = Object.values(statuses).every((s) => s === 'done');
+  const anyFailed = Object.values(statuses).some((s) => s === 'failed');
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="glass rounded-2xl p-10 flex flex-col items-center gap-5 max-w-sm w-full mx-4">
-        <div className="relative w-14 h-14">
-          <span className="absolute inset-0 rounded-full border-2 border-blue-500/20" />
-          <span className="absolute inset-0 rounded-full border-t-2 border-blue-500 animate-spin" />
+      <div className="glass rounded-2xl p-8 flex flex-col items-center gap-6 max-w-sm w-full mx-4">
+        {/* Top spinner */}
+        <div className="relative w-12 h-12">
+          <span className="absolute inset-0 rounded-full border-2 border-blue-500/15" />
+          <span className={`absolute inset-0 rounded-full border-t-2 border-blue-500 ${allDone ? '' : 'animate-spin'}`} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <FiLoader size={16} className={`text-blue-400 ${allDone ? '' : 'animate-spin'}`} />
+          </div>
         </div>
+
         <div className="text-center">
-          <p className="text-sm font-semibold text-slate-200">Analyzing claim documents</p>
-          <p className="text-xs text-slate-500 mt-1">Running both analysis engines in parallel…</p>
+          <p className="text-sm font-semibold text-slate-200">
+            {allDone ? 'Analysis complete' : anyFailed ? 'Some engines failed' : 'Analyzing claim documents'}
+          </p>
+          <p className="text-xs text-slate-500 mt-1">
+            {allDone ? 'Redirecting…' : 'Running all engines in parallel'}
+          </p>
         </div>
+
+        {/* Per-engine status rows */}
         <div className="w-full space-y-2">
-          {['Claim Decision Engine', 'Image Validation Engine', 'Document Forgery Detector'].map((label) => (
-            <div key={label} className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse-slow" />
-              <span className="text-xs text-slate-400">{label}</span>
-            </div>
-          ))}
+          {ENGINE_LABELS.map(({ key, label }) => {
+            const s = statuses[key];
+            return (
+              <div
+                key={key}
+                className={[
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-colors',
+                  s === 'done'    ? 'bg-emerald-500/[0.06] border-emerald-500/20' :
+                  s === 'failed'  ? 'bg-red-500/[0.06]     border-red-500/20'     :
+                                    'bg-white/[0.03]       border-white/[0.06]',
+                ].join(' ')}
+              >
+                <StatusIcon status={s} />
+                <span className={`flex-1 text-xs font-medium ${
+                  s === 'done'   ? 'text-emerald-400' :
+                  s === 'failed' ? 'text-red-400'     :
+                                   'text-slate-300'
+                }`}>
+                  {label}
+                </span>
+                <span className={`text-[10px] font-semibold ${
+                  s === 'done'   ? 'text-emerald-500' :
+                  s === 'failed' ? 'text-red-500'     :
+                                   'text-blue-400'
+                }`}>
+                  {s === 'done' ? 'Done' : s === 'failed' ? 'Failed' : 'Running…'}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -107,7 +168,12 @@ export default function UploadPage() {
   const [uploadClaims]  = useUploadForClaimsMutation();
   const [uploadForgery] = useUploadForForgeryMutation();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]           = useState(false);
+  const [engineStatuses, setEngineStatuses] = useState<EngineStatuses>({
+    claims:  'loading',
+    imaging: 'loading',
+    forgery: 'loading',
+  });
 
   const addFiles = useCallback((incoming: FileList | null) => {
     if (!incoming) return;
@@ -132,13 +198,19 @@ export default function UploadPage() {
     if (!files.length) return;
     setBothFailed(null);
     setLoading(true);
+    setEngineStatuses({ claims: 'loading', imaging: 'loading', forgery: 'loading' });
 
     const claimId = `CLAIM_${Date.now()}`;
 
+    const track = <T,>(key: keyof EngineStatuses, p: Promise<T>): Promise<T> =>
+      p
+        .then((r) => { setEngineStatuses((prev) => ({ ...prev, [key]: 'done' }));   return r; })
+        .catch((e) => { setEngineStatuses((prev) => ({ ...prev, [key]: 'failed' })); throw e; });
+
     const [imagingResult, claimsResult, forgeryResult] = await Promise.allSettled([
-      uploadImaging({ claimId, files }).unwrap(),
-      uploadClaims(files).unwrap(),
-      uploadForgery(files).unwrap(),
+      track('imaging', uploadImaging({ claimId, files }).unwrap()),
+      track('claims',  uploadClaims(files).unwrap()),
+      track('forgery', uploadForgery(files).unwrap()),
     ]);
 
     setLoading(false);
@@ -187,7 +259,7 @@ export default function UploadPage() {
 
   return (
     <>
-      {loading && <LoadingOverlay />}
+      {loading && <LoadingOverlay statuses={engineStatuses} />}
 
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
         {/* Brand */}
