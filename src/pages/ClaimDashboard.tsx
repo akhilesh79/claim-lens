@@ -28,9 +28,10 @@ function ApiErrorCard({ message }: { message: string }) {
 }
 
 export default function ClaimDashboard() {
-  const data         = useAppSelector((s) => s.claims.apiData);
-  const error        = useAppSelector((s) => s.claims.apiError);
+  const data           = useAppSelector((s) => s.claims.apiData);
+  const error          = useAppSelector((s) => s.claims.apiError);
   const forgeryResults = useAppSelector((s) => s.forgery.results);
+  const report         = data?.report;
 
   const [drawerFile, setDrawerFile] = useState<ForgeryFileResult | null>(null);
 
@@ -40,7 +41,7 @@ export default function ClaimDashboard() {
       {/* ── Claim Decision Engine ─────────────────────────────── */}
       {error ? (
         <ApiErrorCard message={error} />
-      ) : data ? (
+      ) : data && report ? (
         <>
           {/* Sticky summary header */}
           <div className='sticky top-14 z-30 pt-1 pb-1 -mx-1 px-1'>
@@ -48,18 +49,18 @@ export default function ClaimDashboard() {
           </div>
 
           {/* Recommended actions */}
-          <RecommendedActions actions={data.recommendedActions} status={data.status} claimId={data.summary.id} />
+          <RecommendedActions actions={report.recommendedActions} status={report.status} claimId={report.summary.id} />
 
           {/* Flat 5-col grid */}
           <div className='grid grid-cols-1 lg:grid-cols-5 gap-4'>
-            <PatientClaimCard   summary={data.summary}                                        className="lg:col-span-2" />
-            <STGComplianceTable rules={data.stgRules} complianceScore={data.complianceScore} className="lg:col-span-3" />
+            <PatientClaimCard   summary={report.summary}                                          className="lg:col-span-2" />
+            <STGComplianceTable rules={report.stgRules} complianceScore={report.complianceScore} className="lg:col-span-3" />
 
-            <DocumentInventory  inventory={data.documentInventory}                            className="lg:col-span-2" />
-            <TreatmentTimeline  timeline={data.timeline}                                      className="lg:col-span-3" />
+            <DocumentInventory  inventory={report.documentInventory}                              className="lg:col-span-2" />
+            <TreatmentTimeline  timeline={report.timeline}                                        className="lg:col-span-3" />
 
-            <VisualProofPanel   proofs={data.visualProofs}                                    className="lg:col-span-2" />
-            <FinancialAnalysis  items={data.financialItems} fraudSignals={data.fraudSignals}  className="lg:col-span-3" />
+            <VisualProofPanel   proofs={report.visualProofs}                                      className="lg:col-span-2" />
+            <FinancialAnalysis  items={report.financialItems} fraudSignals={report.fraudSignals}  className="lg:col-span-3" />
           </div>
         </>
       ) : null}
