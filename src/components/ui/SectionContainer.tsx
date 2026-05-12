@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/cn';
 
 interface SectionContainerProps {
   title: string;
@@ -22,55 +23,51 @@ export function SectionContainer({
   children,
   className = '',
   headerExtra,
-  maxH = 'max-h-[380px]',
+  maxH = 'max-h-[420px]',
 }: SectionContainerProps) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className={`glass rounded-2xl overflow-hidden h-full flex-1 flex flex-col ${className}`}>
+    <section className={cn(
+      'h-full flex flex-col rounded-lg bg-surface border border-border shadow-elev-1 overflow-hidden',
+      className,
+    )}>
       <button
-        type='button'
+        type="button"
         onClick={() => collapsible && setOpen((p) => !p)}
-        className={`w-full flex items-center justify-between px-5 py-3.5 transition-colors flex-shrink-0 ${
-          collapsible ? 'cursor-pointer hover:bg-white/[0.025]' : 'cursor-default'
-        }`}
+        className={cn(
+          'w-full flex items-center justify-between px-4 h-11 flex-shrink-0',
+          'transition-colors duration-fast',
+          collapsible ? 'cursor-pointer hover:bg-surface-muted' : 'cursor-default',
+        )}
+        aria-expanded={open}
       >
-        <div className='flex items-center gap-2.5 min-w-0'>
-          {icon && <span className='text-blue-400 flex-shrink-0 text-base'>{icon}</span>}
-          <h3 className='text-sm font-semibold font-heading text-slate-200 truncate'>{title}</h3>
-          {badge && <span className='flex-shrink-0'>{badge}</span>}
+        <div className="flex items-center gap-2 min-w-0">
+          {icon && <span className="text-text-subtle flex-shrink-0">{icon}</span>}
+          <h3 className="text-h3 text-text truncate">{title}</h3>
+          {badge && <span className="flex-shrink-0">{badge}</span>}
         </div>
-        <div className='flex items-center gap-3 flex-shrink-0 ml-3'>
+        <div className="flex items-center gap-3 flex-shrink-0 ml-3">
           {headerExtra}
           {collapsible && (
-            <motion.span
-              animate={{ rotate: open ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-              className='text-slate-500 text-[10px] leading-none'
-            >
-              ▼
-            </motion.span>
+            <ChevronDown
+              size={16}
+              className={cn(
+                'text-text-subtle transition-transform duration-fast',
+                open && 'rotate-180',
+              )}
+            />
           )}
         </div>
       </button>
 
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            key='content'
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className='border-t border-white/[0.05]'
-          >
-            <div className={`px-5 pb-5 overflow-y-auto ${maxH}`}>{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open && (
+        <div className="border-t border-border">
+          <div className={cn('px-4 pb-4 overflow-y-auto', maxH)}>{children}</div>
+        </div>
+      )}
 
-      {/* Spacer pushes card body to fill grid cell height */}
-      <div className='flex-1' />
-    </div>
+      <div className="flex-1" />
+    </section>
   );
 }

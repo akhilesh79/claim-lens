@@ -1,8 +1,10 @@
-import { motion } from 'framer-motion';
-import { FiEye } from 'react-icons/fi';
-import { SectionContainer, Tooltip } from '@/components/ui';
+import { Eye, Building2, PenTool, Tag, Smartphone, Pill, FileText, Check, Minus } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { SectionContainer } from '@/components/ui';
+import { Button } from '@/ui';
 import { useAppDispatch } from '@/app/hooks';
 import { setSelectedVisualProof } from '@/features/ui/uiSlice';
+import { cn } from '@/lib/cn';
 import type { VisualProof } from '@/types/claims';
 
 interface Props {
@@ -10,70 +12,64 @@ interface Props {
   className?: string;
 }
 
-const ICONS: Record<string, string> = {
-  'Hospital Stamp': '🏥',
-  'Doctor Signature': '✍️',
-  'Implant Sticker': '🔖',
-  'QR / Barcode': '📱',
-  'Pharmacy Seal': '💊',
+const ICONS: Record<string, ReactNode> = {
+  'Hospital Stamp':    <Building2 size={16} />,
+  'Doctor Signature':  <PenTool size={16} />,
+  'Implant Sticker':   <Tag size={16} />,
+  'QR / Barcode':      <Smartphone size={16} />,
+  'Pharmacy Seal':     <Pill size={16} />,
 };
 
 export function VisualProofPanel({ proofs, className }: Props) {
   const dispatch = useAppDispatch();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.26 }}
-      className={`flex flex-col ${className ?? ''}`}
-    >
-      <SectionContainer title='Visual Proof Detected' icon={<FiEye size={14} />} defaultOpen>
-        <div className='space-y-2 pt-3'>
-          {proofs.map((proof, i) => (
-            <motion.div
+    <div className={className}>
+      <SectionContainer title="Visual Proof Detected" icon={<Eye size={14} />} defaultOpen>
+        <ul className="space-y-1.5 pt-3">
+          {proofs.map((proof) => (
+            <li
               key={proof.type}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.05 * i }}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all
-                ${
-                  proof.detected
-                    ? 'border-emerald-500/15 hover:border-emerald-500/25 hover:bg-emerald-500/[0.04]'
-                    : 'border-slate-700/50 bg-white/[0.01]'
-                }`}
+              className={cn(
+                'flex items-center justify-between px-3 py-2.5 rounded-md border',
+                proof.detected ? 'border-border bg-surface' : 'border-border bg-surface-muted',
+              )}
             >
-              <div className='flex items-center gap-2.5'>
-                <span className={`text-base ${!proof.detected ? 'grayscale opacity-40' : ''}`}>
-                  {ICONS[proof.type] ?? '📄'}
+              <div className="flex items-center gap-2.5">
+                <span className={cn(proof.detected ? 'text-success-fg' : 'text-text-subtle')}>
+                  {ICONS[proof.type] ?? <FileText size={16} />}
                 </span>
-                <span className={`text-xs font-medium ${proof.detected ? 'text-slate-200' : 'text-slate-600'}`}>
+                <span className={cn('text-body-strong', proof.detected ? 'text-text' : 'text-text-subtle')}>
                   {proof.type}
                 </span>
               </div>
 
-              <div className='flex items-center gap-2'>
-                <Tooltip content={proof.detected ? 'Detected' : 'Not found'}>
-                  <span
-                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold
-                      ${proof.detected ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/5 text-slate-600'}`}
-                  >
-                    {proof.detected ? '✓' : '–'}
-                  </span>
-                </Tooltip>
+              <div className="flex items-center gap-2">
+                <span
+                  aria-label={proof.detected ? 'Detected' : 'Not found'}
+                  className={cn(
+                    'h-5 w-5 rounded-full grid place-items-center',
+                    proof.detected
+                      ? 'bg-success-bg text-success-fg border border-success-border'
+                      : 'bg-surface-muted text-text-subtle border border-border',
+                  )}
+                >
+                  {proof.detected ? <Check size={12} /> : <Minus size={12} />}
+                </span>
                 {proof.detected && (
-                  <button
+                  <Button
+                    variant="link"
+                    size="sm"
                     onClick={() => dispatch(setSelectedVisualProof(proof.type))}
-                    className='text-[10px] font-semibold text-blue-400 hover:text-blue-300 px-2 py-1 rounded-md hover:bg-blue-500/10 transition-colors'
                   >
                     View
-                  </button>
+                  </Button>
                 )}
               </div>
-            </motion.div>
+            </li>
           ))}
-        </div>
+        </ul>
       </SectionContainer>
-    </motion.div>
+    </div>
   );
 }

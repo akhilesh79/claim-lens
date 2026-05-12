@@ -1,86 +1,87 @@
-import { motion } from 'framer-motion';
-import { AnimatedCounter, StatusBadge, RiskIndicator, ProgressBar } from '@/components/ui';
+import { Surface, StatusBadge } from '@/ui';
+import { ProgressBar } from '@/components/ui';
+import { cn } from '@/lib/cn';
 import type { ClaimDecision } from '@/types/claims';
+import type { RiskLevel } from '@/types/common';
 
 interface Props {
   data: ClaimDecision;
 }
 
+const RISK_TONE: Record<RiskLevel, string> = {
+  Low:      'text-success-fg bg-success-bg border-success-border',
+  Medium:   'text-warning-fg bg-warning-bg border-warning-border',
+  High:     'text-danger-fg  bg-danger-bg  border-danger-border',
+  Critical: 'text-danger-fg  bg-danger-bg  border-danger-border',
+};
+
 export function DecisionSummaryPanel({ data }: Props) {
-  const report = data.report;
+  const r = data.report;
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="glass-elevated rounded-2xl p-5"
-    >
-      <div className="flex flex-col xl:flex-row xl:items-start gap-5">
-        {/* Status block */}
-        <div className="flex flex-wrap items-center gap-4">
-          <StatusBadge status={report.status} size="lg" />
-
-          <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
-
-          <div className="text-center min-w-[72px]">
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Confidence</p>
-            <p className="text-2xl font-black text-white tabular-nums leading-none">
-              <AnimatedCounter value={report.confidence} suffix="%" />
-            </p>
+    <Surface elevation={1} padding="default">
+      <div className="flex flex-col xl:flex-row xl:items-start gap-6">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div>
+            <p className="label-caption mb-1">Decision</p>
+            <StatusBadge status={r.status} />
           </div>
 
-          <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
+          <div className="h-10 w-px bg-border hidden sm:block" />
+
+          <div className="min-w-[80px]">
+            <p className="label-caption mb-1">Confidence</p>
+            <p className="num text-h2 text-text">{r.confidence}</p>
+          </div>
+
+          <div className="h-10 w-px bg-border hidden sm:block" />
 
           <div>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Risk Score</p>
-            <RiskIndicator level={report.riskScore} />
+            <p className="label-caption mb-1">Risk</p>
+            <span className={cn(
+              'inline-flex items-center h-6 px-2 rounded-sm border text-caption',
+              RISK_TONE[r.riskScore],
+            )}>
+              {r.riskScore}
+            </span>
           </div>
 
-          <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
+          <div className="h-10 w-px bg-border hidden sm:block" />
 
-          <div className="min-w-[160px]">
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1.5">STG Compliance</p>
-            <ProgressBar value={report.complianceScore} size="sm" color="auto" delay={0.5} />
+          <div className="min-w-[180px]">
+            <p className="label-caption mb-1">STG Compliance</p>
+            <ProgressBar value={r.complianceScore} size="sm" color="auto" />
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="xl:w-px xl:self-stretch w-full h-px bg-white/[0.07]" />
+        <div className="hidden xl:block w-px self-stretch bg-border" />
 
-        {/* Key Reasons */}
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2.5">Key Findings</p>
-          <ul className="space-y-2">
-            {report.keyReasons.map((reason, i) => {
-              const isNegative =
+          <p className="label-caption mb-2">Key Findings</p>
+          <ul className="space-y-1.5">
+            {r.keyReasons.map((reason, i) => {
+              const negative =
                 reason.toLowerCase().includes('missing') ||
                 reason.toLowerCase().includes('exceeded') ||
                 reason.toLowerCase().includes('duplicate');
               return (
-                <motion.li
-                  key={i}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 + i * 0.1 }}
-                  className="flex items-start gap-2.5 text-xs text-slate-300"
-                >
-                  <span
-                    className={`mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0 ${isNegative ? 'bg-amber-400' : 'bg-emerald-400'}`}
-                  />
+                <li key={i} className="flex items-start gap-2 text-body text-text-muted">
+                  <span className={cn(
+                    'mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0',
+                    negative ? 'bg-warning-fg' : 'bg-success-fg',
+                  )} />
                   {reason}
-                </motion.li>
+                </li>
               );
             })}
           </ul>
         </div>
 
-        {/* Claim ID */}
         <div className="text-right flex-shrink-0">
-          <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Claim ID</p>
-          <p className="font-mono text-sm font-semibold text-blue-400">{report.summary.id}</p>
-          <p className="text-xs text-slate-600 mt-0.5">AI-Assisted Review</p>
+          <p className="label-caption mb-1">Claim ID</p>
+          <p className="num text-text">{r.summary.id}</p>
+          <p className="text-caption text-text-subtle mt-1">AI-Assisted Review</p>
         </div>
       </div>
-    </motion.div>
+    </Surface>
   );
 }

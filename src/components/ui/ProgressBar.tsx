@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { cn } from '@/lib/cn';
 
 interface ProgressBarProps {
   value: number;
@@ -6,24 +6,22 @@ interface ProgressBarProps {
   label?: string;
   showValue?: boolean;
   size?: 'xs' | 'sm' | 'md';
-  color?: 'blue' | 'green' | 'amber' | 'red' | 'auto';
+  color?: 'brand' | 'success' | 'warning' | 'danger' | 'auto';
   className?: string;
-  delay?: number;
 }
 
-function resolveColor(color: ProgressBarProps['color'], value: number): string {
+function resolveColor(color: ProgressBarProps['color'], pct: number): string {
   if (color === 'auto') {
-    if (value >= 80) return 'from-emerald-500 to-emerald-400';
-    if (value >= 60) return 'from-amber-500 to-amber-400';
-    return 'from-red-500 to-red-400';
+    if (pct >= 80) return 'bg-success-fg';
+    if (pct >= 60) return 'bg-warning-fg';
+    return 'bg-danger-fg';
   }
-  const MAP: Record<NonNullable<Exclude<ProgressBarProps['color'], 'auto'>>, string> = {
-    blue: 'from-blue-500 to-blue-400',
-    green: 'from-emerald-500 to-emerald-400',
-    amber: 'from-amber-500 to-amber-400',
-    red: 'from-red-500 to-red-400',
-  };
-  return MAP[color ?? 'blue'];
+  return {
+    brand:   'bg-brand-500',
+    success: 'bg-success-fg',
+    warning: 'bg-warning-fg',
+    danger:  'bg-danger-fg',
+  }[color ?? 'brand'];
 }
 
 const HEIGHT: Record<NonNullable<ProgressBarProps['size']>, string> = {
@@ -40,25 +38,22 @@ export function ProgressBar({
   size = 'sm',
   color = 'auto',
   className = '',
-  delay = 0.2,
 }: ProgressBarProps) {
   const pct = Math.min((value / max) * 100, 100);
-  const gradient = resolveColor(color, pct);
+  const fill = resolveColor(color, pct);
 
   return (
     <div className={className}>
       {(label || showValue) && (
-        <div className="flex items-center justify-between mb-1.5">
-          {label && <span className="text-xs text-slate-400">{label}</span>}
-          {showValue && <span className="text-xs font-semibold text-slate-300 tabular-nums">{value}%</span>}
+        <div className="flex items-center justify-between mb-1">
+          {label && <span className="text-small text-text-muted">{label}</span>}
+          {showValue && <span className="num text-text">{value}%</span>}
         </div>
       )}
-      <div className={`w-full bg-white/[0.06] rounded-full overflow-hidden ${HEIGHT[size]}`}>
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 1.1, ease: 'easeOut', delay }}
-          className={`h-full rounded-full bg-gradient-to-r ${gradient}`}
+      <div className={cn('w-full bg-surface-muted rounded-full overflow-hidden', HEIGHT[size])}>
+        <div
+          className={cn('h-full rounded-full transition-[width] duration-500', fill)}
+          style={{ width: `${pct}%` }}
         />
       </div>
     </div>

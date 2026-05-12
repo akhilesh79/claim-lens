@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { AlertCircle } from 'lucide-react';
 import { useAppSelector } from '@/app/hooks';
+import { Surface } from '@/ui';
 import type { ForgeryFileResult } from '@/types/forgery';
 
 import { DecisionSummaryPanel } from '@/features/claims/components/DecisionSummaryPanel';
@@ -18,67 +19,62 @@ import { ForgeryDrawer } from '@/features/claims/components/ForgeryDrawer';
 function ApiErrorCard({ message }: { message: string }) {
   return (
     <div className='flex items-center justify-center min-h-[40vh]'>
-      <div className='glass rounded-2xl p-8 text-center max-w-md space-y-3'>
-        <div className='text-4xl'>⚠️</div>
-        <h3 className='text-lg font-semibold text-red-400'>Claim Decision Engine Failed</h3>
-        <p className='text-sm text-slate-400 leading-relaxed'>{message}</p>
-      </div>
+      <Surface padding='comfortable' className='max-w-md text-center'>
+        <div className='grid place-items-center mb-3'>
+          <div className='h-10 w-10 rounded-full bg-danger-bg border border-danger-border grid place-items-center'>
+            <AlertCircle size={20} className='text-danger-fg' />
+          </div>
+        </div>
+        <h3 className='text-h3 text-danger-fg mb-1'>Claim Decision Engine Failed</h3>
+        <p className='text-body text-text-muted'>{message}</p>
+      </Surface>
     </div>
   );
 }
 
 export default function ClaimDashboard() {
-  const data           = useAppSelector((s) => s.claims.apiData);
-  const error          = useAppSelector((s) => s.claims.apiError);
+  const data = useAppSelector((s) => s.claims.apiData);
+  const error = useAppSelector((s) => s.claims.apiError);
   const forgeryResults = useAppSelector((s) => s.forgery.results);
-  const report         = data?.report;
+  const report = data?.report;
 
   const [drawerFile, setDrawerFile] = useState<ForgeryFileResult | null>(null);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className='space-y-4'>
-
-      {/* ── Claim Decision Engine ─────────────────────────────── */}
+    <div className='space-y-4'>
       {error ? (
         <ApiErrorCard message={error} />
       ) : data && report ? (
         <>
-          {/* Sticky summary header */}
-          <div className='sticky top-14 z-30 pt-1 pb-1 -mx-1 px-1'>
-            <DecisionSummaryPanel data={data} />
-          </div>
+          <DecisionSummaryPanel data={data} />
 
-          {/* Recommended actions */}
           <RecommendedActions actions={report.recommendedActions} status={report.status} claimId={report.summary.id} />
 
-          {/* Flat 5-col grid */}
           <div className='grid grid-cols-1 lg:grid-cols-5 gap-4'>
-            <PatientClaimCard   summary={report.summary}                                          className="lg:col-span-2" />
-            <STGComplianceTable rules={report.stgRules} complianceScore={report.complianceScore} className="lg:col-span-3" />
+            <PatientClaimCard summary={report.summary} className='lg:col-span-2' />
+            <STGComplianceTable
+              rules={report.stgRules}
+              complianceScore={report.complianceScore}
+              className='lg:col-span-3'
+            />
 
-            <DocumentInventory  inventory={report.documentInventory}                              className="lg:col-span-2" />
-            <TreatmentTimeline  timeline={report.timeline}                                        className="lg:col-span-3" />
+            <DocumentInventory inventory={report.documentInventory} className='lg:col-span-2' />
+            <TreatmentTimeline timeline={report.timeline} className='lg:col-span-3' />
 
-            <VisualProofPanel   proofs={report.visualProofs}                                      className="lg:col-span-2" />
-            <FinancialAnalysis  items={report.financialItems} fraudSignals={report.fraudSignals}  className="lg:col-span-3" />
+            <VisualProofPanel proofs={report.visualProofs} className='lg:col-span-2' />
+            <FinancialAnalysis
+              items={report.financialItems}
+              fraudSignals={report.fraudSignals}
+              className='lg:col-span-3'
+            />
           </div>
         </>
       ) : null}
 
-      {/* ── Document Forgery Detection — always shown if available ── */}
-      {forgeryResults.length > 0 && (
-        <DocumentForgeryPanel
-          results={forgeryResults}
-          onSelect={setDrawerFile}
-        />
-      )}
+      {forgeryResults.length > 0 && <DocumentForgeryPanel results={forgeryResults} onSelect={setDrawerFile} />}
 
-      {/* Modals & drawers */}
       <DocumentPreviewModal />
-      <ForgeryDrawer
-        result={drawerFile}
-        onClose={() => setDrawerFile(null)}
-      />
-    </motion.div>
+      <ForgeryDrawer result={drawerFile} onClose={() => setDrawerFile(null)} />
+    </div>
   );
 }

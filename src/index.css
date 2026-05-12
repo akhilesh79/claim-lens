@@ -1,207 +1,95 @@
+@import './styles/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Per-theme design tokens ─────────────────────────────────────────────── */
-
-[data-theme="claimlens"] {
-  /* Glass surfaces */
-  --glass-bg:          rgba(255, 255, 255, 0.030);
-  --glass-bg-elevated: rgba(255, 255, 255, 0.055);
-  --glass-bg-sm:       rgba(255, 255, 255, 0.050);
-  --glass-border:      rgba(255, 255, 255, 0.070);
-  --glass-border-md:   rgba(255, 255, 255, 0.100);
-  --glass-shadow:      0 4px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.06);
-  --glass-shadow-lg:   0 8px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
-
-  /* Layout */
-  --header-bg:         rgba(5, 13, 26, 0.84);
-  --header-border:     rgba(255, 255, 255, 0.065);
-  --body-bg:           #050d1a;
-  --body-glow-1:       rgba(59, 130, 246, 0.08);
-  --body-glow-2:       rgba(139, 92, 246, 0.05);
-
-  /* Scrollbar */
-  --sb-thumb:          rgba(255, 255, 255, 0.10);
-  --sb-thumb-hover:    rgba(255, 255, 255, 0.18);
-}
-
-[data-theme="light"] {
-  /* Glass surfaces */
-  --glass-bg:          rgba(255, 255, 255, 0.82);
-  --glass-bg-elevated: rgba(255, 255, 255, 0.95);
-  --glass-bg-sm:       rgba(255, 255, 255, 0.90);
-  --glass-border:      rgba(15, 23, 42, 0.090);
-  --glass-border-md:   rgba(15, 23, 42, 0.130);
-  --glass-shadow:      0 2px 16px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
-  --glass-shadow-lg:   0 6px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
-
-  /* Layout */
-  --header-bg:         rgba(248, 250, 252, 0.92);
-  --header-border:     rgba(15, 23, 42, 0.08);
-  --body-bg:           #f1f5f9;
-  --body-glow-1:       rgba(59, 130, 246, 0.04);
-  --body-glow-2:       rgba(139, 92, 246, 0.02);
-
-  /* Scrollbar */
-  --sb-thumb:          rgba(15, 23, 42, 0.15);
-  --sb-thumb-hover:    rgba(15, 23, 42, 0.25);
-}
-
-/* ─── Global base ──────────────────────────────────────────────────────────── */
-
+/* ============================================================================
+   GLOBAL BASE
+   ========================================================================== */
 @layer base {
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--sb-thumb) transparent;
-  }
-  *::-webkit-scrollbar          { width: 5px; height: 5px; }
-  *::-webkit-scrollbar-track    { background: transparent; }
-  *::-webkit-scrollbar-thumb    { background-color: var(--sb-thumb);       border-radius: 3px; }
-  *::-webkit-scrollbar-thumb:hover { background-color: var(--sb-thumb-hover); }
+  html { font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11'; } /* Inter calibration */
 
   body {
-    font-family: 'Sora', system-ui, sans-serif;
-    background-color: var(--body-bg);
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -20%, var(--body-glow-1) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 80%,  var(--body-glow-2) 0%, transparent 50%);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background-color: rgb(var(--color-canvas));
+    color: rgb(var(--color-text));
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
-    transition: background-color 0.25s ease;
   }
 
-  /* Poppins for all headings */
-  h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', system-ui, sans-serif; }
+  h1, h2, h3, h4, h5, h6 { font-family: inherit; font-weight: 600; }
+
+  /* Scrollbar — neutral, system-feeling */
+  * { scrollbar-width: thin; scrollbar-color: rgb(var(--color-border-strong)) transparent; }
+  *::-webkit-scrollbar          { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-track    { background: transparent; }
+  *::-webkit-scrollbar-thumb    { background-color: rgb(var(--color-border-strong)); border-radius: 4px; }
+
+  /* Focus ring — applied uniformly via :focus-visible */
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-brand-500));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Tabular numerals for currency / IDs by default in mono */
+  .font-mono { font-feature-settings: 'tnum'; }
 }
 
-/* ─── Component utilities ───────────────────────────────────────────────────── */
-
+/* ============================================================================
+   COMPONENT UTILITIES (new system)
+   ========================================================================== */
 @layer components {
+  /* Surface — replaces .glass. Use <Surface> primitive in new code. */
+  .surface {
+    background-color: rgb(var(--color-surface));
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 8px;
+  }
+  .surface-elev-1 { box-shadow: var(--elev-1); }
+  .surface-elev-2 { box-shadow: var(--elev-2); }
 
-  /* Glassmorphic cards — all colours driven by CSS vars */
-  .glass {
-    background:           var(--glass-bg);
-    backdrop-filter:      blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border:               1px solid var(--glass-border);
-    box-shadow:           var(--glass-shadow);
+  /* Caption label (replaces .section-label) */
+  .label-caption {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: rgb(var(--color-text-subtle));
   }
 
-  .glass-elevated {
-    background:           var(--glass-bg-elevated);
-    backdrop-filter:      blur(20px) saturate(200%);
-    -webkit-backdrop-filter: blur(20px) saturate(200%);
-    border:               1px solid var(--glass-border-md);
-    box-shadow:           var(--glass-shadow-lg);
-  }
-
-  .glass-sm {
-    background:           var(--glass-bg-sm);
-    backdrop-filter:      blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border:               1px solid var(--glass-border);
-  }
-
-  /* Status badges */
-  .status-pass        { @apply bg-emerald-500/10 border border-emerald-500/30 text-emerald-600; }
-  .status-fail        { @apply bg-red-500/10     border border-red-500/30     text-red-600;     }
-  .status-conditional { @apply bg-amber-500/10  border border-amber-500/30  text-amber-600;  }
-  .status-warn        { @apply bg-amber-500/10  border border-amber-500/25  text-amber-600;  }
-
-  /* Maintain bright badge colours on dark theme */
-  [data-theme="claimlens"] .status-pass        { color: #34d399; }
-  [data-theme="claimlens"] .status-fail        { color: #f87171; }
-  [data-theme="claimlens"] .status-conditional { color: #fbbf24; }
-  [data-theme="claimlens"] .status-warn        { color: #fbbf24; }
-
-  /* Gradient text */
-  .text-gradient-blue {
-    @apply bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent;
-  }
-
-  /* Section label — Poppins for all caps labels inside cards */
-  .section-label { @apply text-[10px] font-semibold uppercase tracking-[0.12em] font-heading; }
-
-  /* Hover rows */
-  .hover-row { @apply hover:bg-black/[0.025] transition-colors duration-150; }
-
-  /* Mismatch highlight */
-  .mismatch-cell { @apply bg-red-500/10 text-red-500 rounded px-1.5 py-0.5; }
-
-  /* Scan viewer */
-  .scan-bg {
-    background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0d14 50%, #050709 100%);
-  }
+  /* Mono numeric (currency, IDs) */
+  .num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; font-size: 13px; font-weight: 500; }
 }
 
-/* ─── Light-theme overrides ─────────────────────────────────────────────────
-   Tailwind's dark-palette classes (slate-200, *-400 accents, white/* opacities)
-   are invisible or washed-out on a light background.  These rules flip the
-   palette so every token stays readable without touching component code.      */
+/* ============================================================================
+   LEGACY COMPATIBILITY — kept so unmigrated pages keep rendering.
+   Remove these blocks once features/{claims,imaging,forgery} are migrated to
+   the <Surface>/<Badge>/<Card> primitives in src/ui/.
+   ========================================================================== */
+@layer components {
+  .glass,
+  .glass-elevated,
+  .glass-sm {
+    background-color: rgb(var(--color-surface));
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 8px;
+    box-shadow: var(--elev-1);
+  }
+  .glass-elevated { box-shadow: var(--elev-2); }
 
-/* ── Slate text ──
-   text-white / text-slate-100 are ONLY overridden inside glass surfaces.
-   Colored-background elements (e.g. bg-blue-600 nav buttons) must keep white. */
-[data-theme="light"] .glass .text-white,
-[data-theme="light"] .glass-elevated .text-white,
-[data-theme="light"] .glass-sm .text-white,
-[data-theme="light"] .glass .text-slate-100,
-[data-theme="light"] .glass-elevated .text-slate-100 { color: #0f172a; }
+  .status-pass        { @apply bg-success-bg border border-success-border text-success-fg; }
+  .status-fail        { @apply bg-danger-bg  border border-danger-border  text-danger-fg;  }
+  .status-conditional { @apply bg-warning-bg border border-warning-border text-warning-fg; }
+  .status-warn        { @apply bg-warning-bg border border-warning-border text-warning-fg; }
 
-[data-theme="light"] .text-slate-200 { color: #0f172a; }
-
-[data-theme="light"] .text-slate-300  { color: #1e293b; }
-[data-theme="light"] .text-slate-400  { color: #334155; }
-[data-theme="light"] .text-slate-500  { color: #475569; }
-[data-theme="light"] .text-slate-600  { color: #64748b; }
-[data-theme="light"] .text-slate-700  { color: #334155; }
-
-/* ── Accent text — *-400 variants are too pale on white, shift to *-600/700 ── */
-[data-theme="light"] .text-blue-400    { color: #2563eb; }
-[data-theme="light"] .text-blue-300    { color: #1d4ed8; }
-[data-theme="light"] .text-emerald-400 { color: #059669; }
-[data-theme="light"] .text-emerald-500 { color: #047857; }
-[data-theme="light"] .text-red-400     { color: #dc2626; }
-[data-theme="light"] .text-red-500     { color: #b91c1c; }
-[data-theme="light"] .text-amber-400   { color: #b45309; }
-[data-theme="light"] .text-amber-300   { color: #92400e; }
-[data-theme="light"] .text-cyan-400    { color: #0891b2; }
-[data-theme="light"] .text-violet-400  { color: #6d28d9; }
-[data-theme="light"] .text-orange-400  { color: #c2410c; }
-
-/* ── Section labels inherit no color — make them slate-500 in light ── */
-[data-theme="light"] .section-label { color: #475569; }
-
-/* ── Borders (white-opacity → dark-opacity equivalents) ── */
-[data-theme="light"] .border-white\/\[0\.04\] { border-color: rgba(15,23,42,0.07); }
-[data-theme="light"] .border-white\/\[0\.05\],
-[data-theme="light"] .border-white\/\[0\.06\],
-[data-theme="light"] .border-white\/\[0\.07\],
-[data-theme="light"] .border-white\/\[0\.08\],
-[data-theme="light"] .border-white\/10        { border-color: rgba(15,23,42,0.10); }
-[data-theme="light"] .border-white\/\[0\.09\],
-[data-theme="light"] .border-white\/\[0\.15\] { border-color: rgba(15,23,42,0.14); }
-
-/* ── Subtle bg surfaces (white-opacity → very-light dark-opacity) ── */
-[data-theme="light"] .bg-white\/\[0\.015\]   { background-color: rgba(15,23,42,0.02); }
-[data-theme="light"] .bg-white\/\[0\.02\]    { background-color: rgba(15,23,42,0.03); }
-[data-theme="light"] .bg-white\/\[0\.025\]   { background-color: rgba(15,23,42,0.03); }
-[data-theme="light"] .bg-white\/\[0\.03\]    { background-color: rgba(15,23,42,0.04); }
-[data-theme="light"] .bg-white\/\[0\.04\]    { background-color: rgba(15,23,42,0.04); }
-[data-theme="light"] .bg-white\/\[0\.05\]    { background-color: rgba(15,23,42,0.05); }
-[data-theme="light"] .bg-white\/\[0\.06\]    { background-color: rgba(15,23,42,0.06); }
-[data-theme="light"] .bg-white\/\[0\.09\]    { background-color: rgba(15,23,42,0.07); }
-
-/* ── Hover bg surfaces ── */
-[data-theme="light"] .hover\:bg-white\/\[0\.02\]:hover  { background-color: rgba(15,23,42,0.04); }
-[data-theme="light"] .hover\:bg-white\/\[0\.05\]:hover  { background-color: rgba(15,23,42,0.06); }
-[data-theme="light"] .hover\:bg-white\/\[0\.025\]:hover { background-color: rgba(15,23,42,0.04); }
-[data-theme="light"] .hover\:bg-white\/\[0\.09\]:hover  { background-color: rgba(15,23,42,0.08); }
-
-/* ── Black opacity elements (day-badge backgrounds, overlays) ── */
-[data-theme="light"] .bg-black\/30 { background-color: rgba(15,23,42,0.08); }
-[data-theme="light"] .bg-black\/40 { background-color: rgba(15,23,42,0.10); }
-
-/* Animations */
-@keyframes fadeIn  { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-@keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .section-label   { @apply label-caption; }
+  .hover-row       { @apply hover:bg-surface-muted transition-colors; }
+  .mismatch-cell   { @apply bg-danger-bg text-danger-fg rounded-sm px-1.5 py-0.5; }
+  .text-gradient-blue { @apply text-brand-600 font-semibold; } /* gradient → solid */
+}

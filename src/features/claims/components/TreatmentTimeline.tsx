@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion';
-import { FiClock } from 'react-icons/fi';
+import { Clock } from 'lucide-react';
 import { SectionContainer, Timeline } from '@/components/ui';
 import type { TimelineEntry } from '@/components/ui';
 import type { TimelineEvent } from '@/types/claims';
@@ -22,17 +21,8 @@ export function TreatmentTimeline({ timeline, className }: Props) {
   }));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.22 }}
-      className={`flex flex-col ${className ?? ''}`}
-    >
-      <SectionContainer
-        title="Treatment Timeline"
-        icon={<FiClock size={14} />}
-        defaultOpen
-      >
+    <div className={className}>
+      <SectionContainer title="Treatment Timeline" icon={<Clock size={14} />} defaultOpen>
         <div className="pt-4">
           <Timeline
             entries={entries}
@@ -40,6 +30,6 @@ export function TreatmentTimeline({ timeline, className }: Props) {
           />
         </div>
       </SectionContainer>
-    </motion.div>
+    </div>
   );
 }

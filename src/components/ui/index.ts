@@ -1,6 +1,5 @@
 export { StatusBadge } from './StatusBadge';
 export { RiskIndicator } from './RiskIndicator';
-export { AnimatedCounter } from './AnimatedCounter';
 export { ProgressBar } from './ProgressBar';
 export { InfoCard } from './InfoCard';
 export { SectionContainer } from './SectionContainer';

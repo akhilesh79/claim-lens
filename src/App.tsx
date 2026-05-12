@@ -1,52 +1,48 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
-import { PageLayout } from '@/components/layout/PageLayout';
+import { AppShell } from '@/components/AppShell/AppShell';
+import { EmptyState } from '@/ui';
 
-const UploadPage = lazy(() => import('@/pages/UploadPage'));
-const ClaimDashboard = lazy(() => import('@/pages/ClaimDashboard'));
-const ImagingDashboard = lazy(() => import('@/pages/ImagingDashboard'));
+const UploadPage     = lazy(() => import('@/pages/UploadPage'));
+const CasesQueue     = lazy(() => import('@/routes/CasesQueue'));
+const CaseWorkspace  = lazy(() => import('@/routes/CaseWorkspace'));
 
 /** Reads theme from Redux and syncs it to the <html data-theme> attribute. */
 function ThemeSyncer() {
   const theme = useAppSelector((s) => s.ui.theme);
-
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'claimlens' : 'light');
   }, [theme]);
-
   return null;
-}
-
-/**
- * Redirects to the upload page when neither dashboard has data yet.
- * Once at least one API result exists (data or error), the guard lets through.
- */
-function RequireData({ children }: { children: React.ReactNode }) {
-  const claimsData = useAppSelector((s) => s.claims.apiData);
-  const claimsError = useAppSelector((s) => s.claims.apiError);
-  const imagingData = useAppSelector((s) => s.imaging.apiData);
-  const imagingError = useAppSelector((s) => s.imaging.apiError);
-  const forgeryResults = useAppSelector((s) => s.forgery.results);
-  const forgeryError = useAppSelector((s) => s.forgery.apiError);
-
-  const hasAnyResult =
-    claimsData !== null ||
-    claimsError !== null ||
-    imagingData !== null ||
-    imagingError !== null ||
-    forgeryResults.length > 0 ||
-    forgeryError !== null;
-
-  if (!hasAnyResult) return <Navigate to='/' replace />;
-  return <>{children}</>;
 }
 
 function PageFallback() {
   return (
-    <div className='flex items-center justify-center min-h-screen'>
-      <span className='loading loading-spinner loading-lg text-primary' />
+    <div className="min-h-screen grid place-items-center bg-canvas">
+      <div className="h-8 w-8 rounded-full border-2 border-border border-t-brand-500 animate-spin" />
     </div>
+  );
+}
+
+/** /cases/new wraps the upload flow inside the new shell. */
+function NewCaseRoute() {
+  return (
+    <AppShell>
+      <Suspense fallback={<PageFallback />}>
+        <UploadPage />
+      </Suspense>
+    </AppShell>
+  );
+}
+
+function NotFound() {
+  return (
+    <AppShell>
+      <div className="px-6 py-16">
+        <EmptyState title="Page not found" description="The route you tried doesn't exist." />
+      </div>
+    </AppShell>
   );
 }
 
@@ -54,28 +50,16 @@ function AppRoutes() {
   return (
     <Suspense fallback={<PageFallback />}>
       <Routes>
-        <Route path='/' element={<UploadPage />} />
-        <Route
-          path='/claims'
-          element={
-            <RequireData>
-              <PageLayout>
-                <ClaimDashboard />
-              </PageLayout>
-            </RequireData>
-          }
-        />
-        <Route
-          path='/imaging'
-          element={
-            <RequireData>
-              <PageLayout>
-                <ImagingDashboard />
-              </PageLayout>
-            </RequireData>
-          }
-        />
-        <Route path='*' element={<Navigate to='/' replace />} />
+        <Route path="/" element={<Navigate to="/cases" replace />} />
+        <Route path="/cases" element={<CasesQueue />} />
+        <Route path="/cases/new" element={<NewCaseRoute />} />
+        <Route path="/cases/:id" element={<CaseWorkspace />} />
+
+        {/* Legacy redirects — old /claims and /imaging now live as tabs in /cases/:id */}
+        <Route path="/claims"  element={<Navigate to="/cases" replace />} />
+        <Route path="/imaging" element={<Navigate to="/cases" replace />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

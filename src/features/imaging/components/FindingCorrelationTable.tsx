@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import { FiCheckCircle } from 'react-icons/fi';
+import { CheckCircle2, Check, X } from 'lucide-react';
 import { SectionContainer, ProgressBar } from '@/components/ui';
+import { Badge } from '@/ui';
 import type { CorrelationRow } from '@/types/imaging';
 import type { MatchStatus } from '@/types/common';
 
@@ -10,96 +10,74 @@ interface Props {
 }
 
 function BoolCell({ value, text }: { value: boolean | null; text?: string }) {
-  if (text) return <span className="text-xs font-medium text-amber-300">{text}</span>;
-  if (value === null) return <span className="text-slate-600 text-xs">—</span>;
-  return (
-    <span className={`text-sm font-bold ${value ? 'text-emerald-400' : 'text-red-400'}`}>
-      {value ? '✓' : '✗'}
-    </span>
-  );
+  if (text) return <span className="text-body-strong text-warning-fg">{text}</span>;
+  if (value === null) return <span className="text-text-subtle text-small">—</span>;
+  return value
+    ? <Check size={16} className="text-success-fg inline" />
+    : <X     size={16} className="text-danger-fg inline" />;
 }
 
-const MATCH_BADGE: Record<MatchStatus, { label: string; cls: string }> = {
-  match: { label: '✓ Match', cls: 'text-emerald-400 bg-emerald-500/10' },
-  mismatch: { label: '✗ Mismatch', cls: 'text-red-400 bg-red-500/10' },
-  partial: { label: '⚠ Partial', cls: 'text-amber-400 bg-amber-500/10' },
+const MATCH: Record<MatchStatus, { tone: 'success' | 'danger' | 'warning'; label: string }> = {
+  match:    { tone: 'success', label: 'Match' },
+  mismatch: { tone: 'danger',  label: 'Mismatch' },
+  partial:  { tone: 'warning', label: 'Partial' },
 };
 
 export function FindingCorrelationTable({ rows, consistencyScore }: Props) {
   const matches = rows.filter((r) => r.match === 'match').length;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.25 }}
-    >
-      <SectionContainer title="Finding Correlation" icon={<FiCheckCircle size={14} />} defaultOpen>
-        <div className="pt-3 overflow-x-auto">
-          {rows.length > 0 ? (
-            <table className="w-full text-xs min-w-[340px]">
-              <thead>
-                <tr className="border-b border-white/[0.07]">
-                  {['Finding', 'Image AI', 'Report', 'Match'].map((h) => (
-                    <th
-                      key={h}
-                      className="pb-2.5 pr-2 first:pl-0 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-wider"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row, i) => (
-                  <motion.tr
-                    key={`${row.finding}-${i}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.05 * i }}
-                    className={`border-b border-white/[0.04] last:border-0 transition-colors ${
-                      row.match === 'mismatch' ? 'bg-red-500/[0.04]' : 'hover:bg-white/[0.02]'
-                    }`}
-                  >
-                    <td className="py-2.5 pr-2 font-medium text-slate-200">{row.finding}</td>
-                    <td className="py-2.5 pr-2 text-center">
-                      <BoolCell value={row.imageAI} text={row.aiValue} />
-                    </td>
-                    <td className="py-2.5 pr-2 text-center">
-                      <BoolCell value={row.report} text={row.reportValue} />
-                    </td>
-                    <td className="py-2.5">
-                      <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${MATCH_BADGE[row.match].cls}`}>
-                        {MATCH_BADGE[row.match].label}
-                      </span>
-                    </td>
-                  </motion.tr>
+    <SectionContainer title="Finding Correlation" icon={<CheckCircle2 size={14} />} defaultOpen>
+      <div className="pt-3 overflow-x-auto">
+        {rows.length > 0 ? (
+          <table className="w-full border-collapse min-w-[340px]">
+            <thead className="bg-surface-muted">
+              <tr className="border-b border-border">
+                {['Finding', 'Image AI', 'Report', 'Match'].map((h) => (
+                  <th key={h} className="h-10 px-3 first:pl-4 last:pr-4 label-caption text-left whitespace-nowrap">
+                    {h}
+                  </th>
                 ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-xs text-slate-600 italic py-2">No correlation data available</p>
-          )}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <tr
+                  key={`${row.finding}-${i}`}
+                  className={
+                    row.match === 'mismatch'
+                      ? 'border-b border-border last:border-0 bg-danger-bg/40'
+                      : 'border-b border-border last:border-0 hover:bg-surface-muted'
+                  }
+                >
+                  <td className="py-2.5 px-3 first:pl-4 text-body-strong text-text">{row.finding}</td>
+                  <td className="py-2.5 px-3 text-center">
+                    <BoolCell value={row.imageAI} text={row.aiValue} />
+                  </td>
+                  <td className="py-2.5 px-3 text-center">
+                    <BoolCell value={row.report} text={row.reportValue} />
+                  </td>
+                  <td className="py-2.5 px-3 last:pr-4">
+                    <Badge tone={MATCH[row.match].tone}>{MATCH[row.match].label}</Badge>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="text-small text-text-subtle italic py-2">No correlation data available</p>
+        )}
 
-          <div className="mt-4 pt-3 border-t border-white/[0.06] space-y-2">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-500">Matched findings</span>
-              <span className="text-slate-300 font-semibold tabular-nums">
-                {matches}/{rows.length}
-              </span>
-            </div>
-            {consistencyScore !== null && (
-              <ProgressBar
-                value={consistencyScore}
-                label="Consistency Score"
-                size="sm"
-                color="auto"
-                delay={0.5}
-              />
-            )}
+        <div className="mt-4 pt-3 border-t border-border space-y-2">
+          <div className="flex justify-between text-small">
+            <span className="text-text-subtle">Matched findings</span>
+            <span className="num text-text">{matches}/{rows.length}</span>
           </div>
+          {consistencyScore !== null && (
+            <ProgressBar value={consistencyScore} label="Consistency Score" size="sm" color="auto" />
+          )}
         </div>
-      </SectionContainer>
-    </motion.div>
+      </div>
+    </SectionContainer>
   );
 }

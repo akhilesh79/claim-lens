@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
+import { AlertCircle } from 'lucide-react';
 import { useAppSelector } from '@/app/hooks';
+import { Surface } from '@/ui';
 
 import { ImagingHeaderPanel } from '@/features/imaging/components/ImagingHeaderPanel';
 import { ImageViewer } from '@/features/imaging/components/ImageViewer';
@@ -16,11 +17,15 @@ import { RadiologyTimeline } from '@/features/imaging/components/RadiologyTimeli
 function ApiErrorCard({ message }: { message: string }) {
   return (
     <div className="flex items-center justify-center min-h-[40vh]">
-      <div className="glass rounded-2xl p-8 text-center max-w-md space-y-3">
-        <div className="text-4xl">⚠️</div>
-        <h3 className="text-lg font-semibold text-red-400">Image Validation Engine Failed</h3>
-        <p className="text-sm text-slate-400 leading-relaxed">{message}</p>
-      </div>
+      <Surface padding="comfortable" className="max-w-md text-center">
+        <div className="grid place-items-center mb-3">
+          <div className="h-10 w-10 rounded-full bg-danger-bg border border-danger-border grid place-items-center">
+            <AlertCircle size={20} className="text-danger-fg" />
+          </div>
+        </div>
+        <h3 className="text-h3 text-danger-fg mb-1">Image Validation Engine Failed</h3>
+        <p className="text-body text-text-muted">{message}</p>
+      </Surface>
     </div>
   );
 }
@@ -28,8 +33,8 @@ function ApiErrorCard({ message }: { message: string }) {
 function ZoneLabel({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-3 mb-3">
-      <span className="text-[9px] font-bold font-heading uppercase tracking-widest text-slate-500">{label}</span>
-      <span className="flex-1 h-px border-t border-white/[0.07]" />
+      <span className="label-caption">{label}</span>
+      <span className="flex-1 h-px bg-border" />
     </div>
   );
 }
@@ -39,19 +44,12 @@ export default function ImagingDashboard() {
   const error = useAppSelector((s) => s.imaging.apiError);
 
   if (error) return <ApiErrorCard message={error} />;
-  if (!data)  return null;
+  if (!data) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-6"
-    >
-      {/* ── Header ─────────────────────────────────────────────── */}
+    <div className="space-y-6">
       <ImagingHeaderPanel data={data} />
 
-      {/* ── Zone 1: Validation & Compliance — 3 equal columns ──── */}
       <div>
         <ZoneLabel label="Validation & Compliance" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -61,7 +59,6 @@ export default function ImagingDashboard() {
         </div>
       </div>
 
-      {/* ── Zone 2: Study context — 3 equal columns ────────────── */}
       <div>
         <ZoneLabel label="Study Context" />
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -77,13 +74,11 @@ export default function ImagingDashboard() {
         </div>
       </div>
 
-      {/* ── Zone 3: Timeline — full width ──────────────────────── */}
       <div>
         <ZoneLabel label="Timeline" />
         <RadiologyTimeline timeline={data.radiologyTimeline} isLogical={data.timelineLogical} />
       </div>
 
-      {/* ── Zone 4: AI Analysis — 2 equal columns ──────────────── */}
       <div>
         <ZoneLabel label="AI Analysis" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -92,7 +87,6 @@ export default function ImagingDashboard() {
         </div>
       </div>
 
-      {/* ── Zone 5: Documentation ───────────────────────────────── */}
       <div>
         <ZoneLabel label="Documentation" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -103,6 +97,6 @@ export default function ImagingDashboard() {
           />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

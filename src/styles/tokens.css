@@ -1,0 +1,101 @@
+/* ============================================================================
+   ClaimLens Design Tokens — single source of truth.
+   Consumed by tailwind.config via CSS-var → utility binding.
+   Light theme is primary; dark theme mirrors with the same brand+semantic hex.
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+  /* Surfaces / chrome (neutrals) */
+  --color-canvas:        248 250 252;   /* slate-50  — page bg */
+  --color-surface:       255 255 255;   /* card bg */
+  --color-surface-muted: 241 245 249;   /* slate-100 — table header, hover row */
+  --color-surface-sunk:  248 250 252;   /* nested surface */
+
+  /* Borders */
+  --color-border:        226 232 240;   /* slate-200 */
+  --color-border-strong: 203 213 225;   /* slate-300 */
+
+  /* Text */
+  --color-text:          15 23 42;      /* slate-900 */
+  --color-text-muted:    51 65 85;      /* slate-700 */
+  --color-text-subtle:   100 116 139;   /* slate-500 */
+  --color-text-inverse:  255 255 255;
+
+  /* Brand (single hue, sparingly used) */
+  --color-brand-50:      239 246 255;
+  --color-brand-100:     219 234 254;
+  --color-brand-500:     37 99 235;     /* primary action */
+  --color-brand-600:     29 78 216;     /* hover */
+  --color-brand-700:     30 64 175;     /* active */
+
+  /* Semantic — meaning, never decoration */
+  --color-success-bg:     236 253 245;
+  --color-success-fg:     4   120 87;
+  --color-success-border: 167 243 208;
+
+  --color-warning-bg:     255 251 235;
+  --color-warning-fg:     180 83  9;
+  --color-warning-border: 253 230 138;
+
+  --color-danger-bg:      254 242 242;
+  --color-danger-fg:      185 28  28;
+  --color-danger-border:  254 202 202;
+
+  --color-info-bg:        239 246 255;
+  --color-info-fg:        29  78  216;
+  --color-info-border:    191 219 254;
+
+  /* Elevation — three levels, no glow */
+  --elev-1: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --elev-2: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --elev-3: 0 12px 32px rgba(15, 23, 42, 0.12);
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 3px rgb(var(--color-brand-100));
+}
+
+[data-theme="claimlens"],
+[data-theme="dark"] {
+  /* Dark mirror — same brand/semantic foreground hex; surfaces invert. */
+  --color-canvas:        9   14  26;    /* near-black */
+  --color-surface:       17  24  39;    /* gray-900-ish */
+  --color-surface-muted: 24  31  47;
+  --color-surface-sunk:  13  19  32;
+
+  --color-border:        39  46  63;
+  --color-border-strong: 55  65  81;
+
+  --color-text:          241 245 249;
+  --color-text-muted:    203 213 225;
+  --color-text-subtle:   148 163 184;
+  --color-text-inverse:  15  23  42;
+
+  --color-brand-50:      30  58  138;   /* deeper for dark surfaces */
+  --color-brand-100:     30  64  175;
+  --color-brand-500:     59  130 246;
+  --color-brand-600:     96  165 250;
+  --color-brand-700:     147 197 253;
+
+  --color-success-bg:     6   78  59;
+  --color-success-fg:     110 231 183;
+  --color-success-border: 6   95  70;
+
+  --color-warning-bg:     69  26  3;
+  --color-warning-fg:     252 211 77;
+  --color-warning-border: 120 53  15;
+
+  --color-danger-bg:      69  10  10;
+  --color-danger-fg:      252 165 165;
+  --color-danger-border:  127 29  29;
+
+  --color-info-bg:        30  58  138;
+  --color-info-fg:        147 197 253;
+  --color-info-border:    30  64  175;
+
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --elev-2: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --elev-3: 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.35);
+}

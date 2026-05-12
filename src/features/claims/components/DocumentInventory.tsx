@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion';
-import { FiFileText } from 'react-icons/fi';
-import { SectionContainer, Tooltip } from '@/components/ui';
+import { FileText, Check, X } from 'lucide-react';
+import { SectionContainer } from '@/components/ui';
+import { Badge } from '@/ui';
+import { cn } from '@/lib/cn';
 import type { DocumentInventory as TDocumentInventory } from '@/types/claims';
 
 interface Props {
@@ -10,70 +11,56 @@ interface Props {
 
 export function DocumentInventory({ inventory, className }: Props) {
   const present = inventory.documents.filter((d) => d.present).length;
-  const total = inventory.documents.length;
+  const total   = inventory.documents.length;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.18 }}
-      className={`flex flex-col ${className ?? ''}`}
-    >
+    <div className={className}>
       <SectionContainer
         title="Document Inventory"
-        icon={<FiFileText size={14} />}
-        headerExtra={
-          <span className="text-[10px] font-semibold text-slate-500 tabular-nums">
-            {present}/{total}
-          </span>
-        }
+        icon={<FileText size={14} />}
+        headerExtra={<span className="num text-text-subtle">{present}/{total}</span>}
         defaultOpen
       >
-        <div className="space-y-1.5 pt-3">
-          {inventory.documents.map((doc, i) => (
-            <motion.div
+        <ul className="space-y-1.5 pt-3">
+          {inventory.documents.map((doc) => (
+            <li
               key={doc.name}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.05 * i }}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors
-                ${doc.present
-                  ? 'bg-white/[0.02] hover:bg-white/[0.04]'
-                  : 'bg-red-500/[0.06] border border-red-500/15 hover:bg-red-500/[0.08]'
-                }`}
+              className={cn(
+                'flex items-center justify-between px-3 py-2.5 rounded-md border',
+                doc.present
+                  ? 'bg-surface border-border'
+                  : 'bg-danger-bg border-danger-border',
+              )}
             >
-              <span className={`text-xs font-medium ${doc.present ? 'text-slate-300' : 'text-red-400'}`}>
+              <span className={cn('text-body-strong', doc.present ? 'text-text' : 'text-danger-fg')}>
                 {doc.name}
               </span>
-              <Tooltip content={doc.present ? 'Document present' : 'Document missing — required'}>
-                <span
-                  className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0
-                    ${doc.present
-                      ? 'bg-emerald-500/20 text-emerald-400'
-                      : 'bg-red-500/20 text-red-400'
-                    }`}
-                >
-                  {doc.present ? '✓' : '✗'}
-                </span>
-              </Tooltip>
-            </motion.div>
+              <span
+                aria-label={doc.present ? 'Present' : 'Missing'}
+                className={cn(
+                  'h-5 w-5 rounded-full grid place-items-center border',
+                  doc.present
+                    ? 'bg-success-bg text-success-fg border-success-border'
+                    : 'bg-danger-bg  text-danger-fg  border-danger-border',
+                )}
+              >
+                {doc.present ? <Check size={12} /> : <X size={12} />}
+              </span>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {/* Footer stats */}
-        <div className="flex gap-3 mt-3 pt-3 border-t border-white/[0.06]">
-          {inventory.duplicateDocs > 0 && (
-            <span className="flex items-center gap-1.5 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
-              <span className="font-bold">{inventory.duplicateDocs}</span> duplicate docs
-            </span>
-          )}
-          {inventory.lowQualityDocs > 0 && (
-            <span className="flex items-center gap-1.5 text-xs text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2.5 py-1 rounded-lg">
-              <span className="font-bold">{inventory.lowQualityDocs}</span> low quality
-            </span>
-          )}
-        </div>
+        {(inventory.duplicateDocs > 0 || inventory.lowQualityDocs > 0) && (
+          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
+            {inventory.duplicateDocs > 0 && (
+              <Badge tone="warning">{inventory.duplicateDocs} duplicate</Badge>
+            )}
+            {inventory.lowQualityDocs > 0 && (
+              <Badge tone="warning">{inventory.lowQualityDocs} low quality</Badge>
+            )}
+          </div>
+        )}
       </SectionContainer>
-    </motion.div>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion';
-import { FiGrid } from 'react-icons/fi';
+import { Grid3x3, AlertCircle, Minus } from 'lucide-react';
 import { SectionContainer, ProgressBar } from '@/components/ui';
+import { Badge } from '@/ui';
+import { cn } from '@/lib/cn';
 import type { AIFinding } from '@/types/imaging';
 
 interface Props {
@@ -8,79 +9,64 @@ interface Props {
   imageQuality: string | null;
 }
 
+function qualityTone(q: string | null): 'success' | 'warning' | 'danger' | 'neutral' {
+  if (q === 'High') return 'success';
+  if (q === 'Moderate') return 'warning';
+  if (q) return 'danger';
+  return 'neutral';
+}
+
 export function AIFindingsPanel({ findings, imageQuality }: Props) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.18 }}
-    >
-      <SectionContainer title="AI Clinical Findings" icon={<FiGrid size={14} />} defaultOpen>
-        <div className="space-y-3 pt-3">
-          {findings.map((finding, i) => (
-            <motion.div
-              key={finding.name}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.06 * i }}
-              className={`p-3 rounded-xl transition-colors ${
-                finding.detected ? 'bg-white/[0.03] hover:bg-white/[0.05]' : 'bg-white/[0.015]'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
-                      finding.detected ? 'bg-red-500/20 text-red-400' : 'bg-white/[0.06] text-slate-600'
-                    }`}
-                  >
-                    {finding.detected ? '!' : '–'}
-                  </span>
-                  <span className={`text-xs font-semibold ${finding.detected ? 'text-slate-200' : 'text-slate-600'}`}>
-                    {finding.name}
-                  </span>
-                  {finding.severity && finding.detected && (
-                    <span className="text-[9px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full">
-                      {finding.severity}
-                    </span>
+    <SectionContainer title="AI Clinical Findings" icon={<Grid3x3 size={14} />} defaultOpen>
+      <div className="space-y-2 pt-3">
+        {findings.map((finding) => (
+          <div
+            key={finding.name}
+            className={cn(
+              'p-3 rounded-md border',
+              finding.detected ? 'bg-danger-bg/40 border-danger-border' : 'bg-surface border-border',
+            )}
+          >
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-2 min-w-0">
+                <span
+                  className={cn(
+                    'h-5 w-5 rounded-full grid place-items-center flex-shrink-0',
+                    finding.detected ? 'bg-danger-bg text-danger-fg border border-danger-border' : 'bg-surface-muted text-text-subtle border border-border',
                   )}
-                </div>
-                <span className={`text-[10px] font-bold ${finding.detected ? 'text-red-400' : 'text-emerald-500'}`}>
-                  {finding.detected ? 'Detected' : 'None'}
+                >
+                  {finding.detected ? <AlertCircle size={12} /> : <Minus size={12} />}
                 </span>
+                <span className={cn('text-body-strong', finding.detected ? 'text-text' : 'text-text-subtle')}>
+                  {finding.name}
+                </span>
+                {finding.severity && finding.detected && (
+                  <Badge tone="warning">{finding.severity}</Badge>
+                )}
               </div>
-              {finding.detected && finding.confidence !== null && (
-                <ProgressBar
-                  value={finding.confidence}
-                  size="xs"
-                  color={finding.confidence > 80 ? 'red' : finding.confidence > 50 ? 'amber' : 'blue'}
-                  showValue
-                  delay={0.3 + i * 0.05}
-                />
-              )}
-            </motion.div>
-          ))}
-
-          <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
-            <span className="text-slate-500">Overall Image Quality</span>
-            {imageQuality ? (
-              <span
-                className={`font-semibold ${
-                  imageQuality === 'High'
-                    ? 'text-emerald-400'
-                    : imageQuality === 'Moderate'
-                    ? 'text-amber-400'
-                    : 'text-red-400'
-                }`}
-              >
-                {imageQuality}
+              <span className={cn('text-caption font-semibold', finding.detected ? 'text-danger-fg' : 'text-success-fg')}>
+                {finding.detected ? 'Detected' : 'None'}
               </span>
-            ) : (
-              <span className="text-slate-600">Not assessed</span>
+            </div>
+            {finding.detected && finding.confidence !== null && (
+              <ProgressBar
+                value={finding.confidence}
+                size="xs"
+                color={finding.confidence > 80 ? 'danger' : finding.confidence > 50 ? 'warning' : 'brand'}
+                showValue
+              />
             )}
           </div>
+        ))}
+
+        <div className="pt-3 border-t border-border flex items-center justify-between">
+          <span className="text-small text-text-subtle">Overall Image Quality</span>
+          {imageQuality
+            ? <Badge tone={qualityTone(imageQuality)}>{imageQuality}</Badge>
+            : <span className="text-small text-text-subtle">Not assessed</span>}
         </div>
-      </SectionContainer>
-    </motion.div>
+      </div>
+    </SectionContainer>
   );
 }

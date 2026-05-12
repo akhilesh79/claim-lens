@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { cn } from '@/lib/cn';
 
 interface TooltipProps {
   content: string;
@@ -10,30 +11,23 @@ interface TooltipProps {
 export function Tooltip({ content, children, position = 'top', className = '' }: TooltipProps) {
   const [visible, setVisible] = useState(false);
 
-  const posStyle =
-    position === 'top'
-      ? 'bottom-full mb-2'
-      : 'top-full mt-2';
-
   return (
     <span
-      className={`relative inline-flex ${className}`}
+      className={cn('relative inline-flex', className)}
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
     >
       {children}
       {visible && (
         <span
-          className={`absolute z-50 left-1/2 -translate-x-1/2 ${posStyle}
-            px-2.5 py-1.5 text-[11px] font-medium text-white
-            bg-slate-800 border border-white/10 rounded-lg
-            whitespace-nowrap shadow-xl pointer-events-none animate-fade-in`}
+          role="tooltip"
+          className={cn(
+            'absolute z-50 left-1/2 -translate-x-1/2',
+            position === 'top' ? 'bottom-full mb-2' : 'top-full mt-2',
+            'px-2 py-1 text-caption text-text-inverse bg-text rounded-sm whitespace-nowrap shadow-elev-2 pointer-events-none',
+          )}
         >
           {content}
-          <span
-            className={`absolute left-1/2 -translate-x-1/2 border-4 border-transparent
-              ${position === 'top' ? 'top-full border-t-slate-800' : 'bottom-full border-b-slate-800'}`}
-          />
         </span>
       )}
     </span>

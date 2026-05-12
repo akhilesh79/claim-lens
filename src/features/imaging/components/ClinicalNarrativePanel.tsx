@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion';
-import { FiBookOpen } from 'react-icons/fi';
+import { BookOpen, Sparkles, FileText } from 'lucide-react';
 import { SectionContainer } from '@/components/ui';
 
 interface Props {
@@ -7,35 +6,25 @@ interface Props {
   modelId: string;
 }
 
-export function ClinicalNarrativePanel({ narrative, modelId }: Props) {
-  const shortModelId = modelId.split('/').pop() ?? modelId;
-
+export function ClinicalNarrativePanel({ narrative }: Props) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.15 }}
-    >
-      <SectionContainer title='Clinical Narrative' icon={<FiBookOpen size={14} />} defaultOpen>
-        {narrative ? (
-          <div className='pt-3 space-y-3'>
-            <div className='p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]'>
-              <p className='text-xs text-slate-300 leading-relaxed'>{narrative}</p>
-            </div>
-            <div className='flex items-center justify-between'>
-              <span className='flex items-center gap-1 text-[9px] text-emerald-500 font-semibold'>
-                <span className='w-1.5 h-1.5 rounded-full bg-emerald-500' />
-                AI Generated
-              </span>
-            </div>
+    <SectionContainer title="Clinical Narrative" icon={<BookOpen size={14} />} defaultOpen>
+      {narrative ? (
+        <div className="pt-3 space-y-3">
+          <div className="p-3 rounded-md bg-surface border border-border">
+            <p className="text-body text-text-muted leading-relaxed">{narrative}</p>
           </div>
-        ) : (
-          <div className='pt-3 flex flex-col items-center justify-center py-6 gap-2 text-center'>
-            <span className='text-2xl opacity-25'>📝</span>
-            <p className='text-xs text-slate-600'>No clinical narrative generated</p>
-          </div>
-        )}
-      </SectionContainer>
-    </motion.div>
+          <span className="inline-flex items-center gap-1 text-caption text-success-fg">
+            <Sparkles size={12} />
+            AI Generated
+          </span>
+        </div>
+      ) : (
+        <div className="pt-3 flex flex-col items-center justify-center py-8 gap-2 text-center">
+          <FileText size={24} className="text-text-subtle" />
+          <p className="text-small text-text-subtle">No clinical narrative generated</p>
+        </div>
+      )}
+    </SectionContainer>
   );
 }

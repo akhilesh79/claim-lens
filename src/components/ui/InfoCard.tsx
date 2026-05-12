@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { cn } from '@/lib/cn';
 
 interface InfoCardProps {
   label: string;
@@ -11,19 +12,19 @@ interface InfoCardProps {
 
 export function InfoCard({ label, value, icon, accent, mono, className = '' }: InfoCardProps) {
   return (
-    <div
-      className={`flex items-start gap-3 p-3 rounded-xl glass-sm transition-colors hover:bg-white/[0.04]
-        ${accent ? 'border-blue-500/20 bg-blue-500/[0.04]' : ''}
-        ${className}`}
-    >
+    <div className={cn(
+      'flex items-start gap-3 p-3 rounded-md border bg-surface',
+      accent ? 'border-brand-100 bg-brand-50' : 'border-border',
+      className,
+    )}>
       {icon && (
-        <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 text-slate-400 text-sm">
+        <div className="h-8 w-8 rounded-md bg-surface-muted border border-border grid place-items-center flex-shrink-0 text-text-subtle">
           {icon}
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-0.5">{label}</p>
-        <p className={`text-sm font-semibold text-slate-100 ${mono ? 'font-mono' : ''} break-words`}>{value}</p>
+        <p className="label-caption mb-0.5">{label}</p>
+        <p className={cn('text-body-strong text-text break-words', mono && 'font-mono')}>{value}</p>
       </div>
     </div>
   );

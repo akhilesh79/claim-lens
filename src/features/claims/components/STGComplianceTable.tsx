@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
-import { FiClipboard } from 'react-icons/fi';
+import { ClipboardList } from 'lucide-react';
 import { SectionContainer, ProgressBar, DataTable } from '@/components/ui';
 import type { TableColumn } from '@/components/ui';
+import { Badge } from '@/ui';
 import type { STGRule } from '@/types/claims';
 import type { RuleStatus } from '@/types/common';
 
@@ -11,38 +11,26 @@ interface Props {
   className?: string;
 }
 
-const STATUS_CELL: Record<RuleStatus, { icon: string; label: string; cls: string }> = {
-  pass: { icon: '✓', label: 'Pass', cls: 'text-emerald-400 bg-emerald-500/10' },
-  warn: { icon: '⚠', label: 'Review', cls: 'text-amber-400 bg-amber-500/10' },
-  fail: { icon: '✗', label: 'Fail', cls: 'text-red-400 bg-red-500/10' },
+const STATUS_TONE: Record<RuleStatus, { tone: 'success' | 'warning' | 'danger'; label: string }> = {
+  pass: { tone: 'success', label: 'Pass' },
+  warn: { tone: 'warning', label: 'Review' },
+  fail: { tone: 'danger',  label: 'Fail' },
 };
 
 export function STGComplianceTable({ rules, complianceScore, className }: Props) {
   const columns: TableColumn<STGRule>[] = [
-    {
-      key: 'rule',
-      header: 'Rule',
-      render: (row) => <span className="text-xs font-medium text-slate-200">{row.rule}</span>,
-    },
-    {
-      key: 'expected',
-      header: 'Expected',
-      render: (row) => <span className="text-xs text-slate-400">{row.expected}</span>,
-    },
+    { key: 'rule',     header: 'Rule',     render: (r) => <span className="text-body-strong text-text">{r.rule}</span> },
+    { key: 'expected', header: 'Expected', render: (r) => <span className="text-body text-text-muted">{r.expected}</span> },
     {
       key: 'observed',
       header: 'Observed',
-      render: (row) => (
-        <span
-          className={`text-xs font-medium ${
-            row.status === 'fail'
-              ? 'text-red-400'
-              : row.status === 'warn'
-              ? 'text-amber-400'
-              : 'text-slate-300'
-          }`}
-        >
-          {row.observed}
+      render: (r) => (
+        <span className={
+          r.status === 'fail' ? 'text-danger-fg text-body-strong'
+          : r.status === 'warn' ? 'text-warning-fg text-body-strong'
+          : 'text-text text-body'
+        }>
+          {r.observed}
         </span>
       ),
     },
@@ -50,48 +38,22 @@ export function STGComplianceTable({ rules, complianceScore, className }: Props)
       key: 'status',
       header: 'Status',
       align: 'center',
-      render: (row) => {
-        const cfg = STATUS_CELL[row.status];
-        return (
-          <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${cfg.cls}`}>
-            {cfg.icon} {cfg.label}
-          </span>
-        );
-      },
+      render: (r) => <Badge tone={STATUS_TONE[r.status].tone}>{STATUS_TONE[r.status].label}</Badge>,
     },
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.15 }}
-      className={`flex flex-col ${className ?? ''}`}
-    >
-      <SectionContainer
-        title="STG Compliance Engine"
-        icon={<FiClipboard size={14} />}
-        defaultOpen
-      >
+    <div className={className}>
+      <SectionContainer title="STG Compliance Engine" icon={<ClipboardList size={14} />} defaultOpen>
         <div className="pt-3">
           <DataTable
             columns={columns}
             data={rules}
-            rowHighlight={(row) => row.status === 'fail'}
-            footer={
-              <div>
-                <ProgressBar
-                  value={complianceScore}
-                  label="Compliance Score"
-                  color="auto"
-                  size="md"
-                  delay={0.5}
-                />
-              </div>
-            }
+            rowHighlight={(r) => r.status === 'fail'}
+            footer={<ProgressBar value={complianceScore} label="Compliance Score" color="auto" size="md" />}
           />
         </div>
       </SectionContainer>
-    </motion.div>
+    </div>
   );
 }
